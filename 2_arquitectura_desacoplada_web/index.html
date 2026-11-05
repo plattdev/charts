@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sustainability (SDI) vs. Happiness (WHR) &amp; GDP per Capita</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <h1>Sustainability (SDI) vs. Happiness (WHR) &amp; Economic Wealth</h1>
+      <p class="page-subtitle">
+        Exploring how efficiently 140 nations convert economic output (GDP per capita, PPP) into human well-being and sustainable development.
+      </p>
+    </header>
+
+    <main>
+      <section class="card" aria-label="Interactive Bubble Chart">
+        <search>
+          <form id="country-filter-form" class="filter-form" action="." method="GET">
+            <label for="country-search" class="filter-label">
+              Highlight Countries (comma-separated):
+            </label>
+            <div class="filter-controls">
+              <input
+                id="country-search"
+                name="countries"
+                class="search-input"
+                type="search"
+                list="country-list"
+                placeholder="e.g., Costa Rica, Finland"
+                aria-describedby="search-hint"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                enterkeyhint="search"
+              >
+              <datalist id="country-list"></datalist>
+              <button id="clear-search" class="btn-secondary" type="button">
+                Reset View
+              </button>
+            </div>
+            <p id="search-hint" class="search-hint">
+              Type one or more countries separated by commas to spotlight them and dim the rest.
+            </p>
+            <div id="active-chips" class="chips-row" aria-label="Highlighted countries"></div>
+            <p id="search-status" class="visually-hidden" aria-live="polite"></p>
+          </form>
+        </search>
+
+        <div
+          id="bubble-plot"
+          class="chart-canvas"
+          role="img"
+          aria-label="Bubble plot with Sustainable Development Index on the X-axis, World Happiness Score on the Y-axis, and bubble area and color proportional to GDP per capita PPP"
+        ></div>
+      </section>
+
+      <section class="card" aria-labelledby="methodology-heading">
+        <h2 id="methodology-heading" class="section-heading">
+          About This Visualization &amp; Methodology
+        </h2>
+        <p class="section-lead">
+          <strong>Core Question:</strong> Which countries are highly efficient at converting their economic resources into actual human well-being and sustainability, and which wealthy nations are underperforming?
+        </p>
+
+        <div class="metadata-grid">
+          <article class="meta-box">
+            <h3>1. X-Axis: Sustainable Development (Overall Score)</h3>
+            <p>
+              Normalized score (<code>0–100</code>) measuring each country's total achievement across all <strong>17 UN Sustainable Development Goals (SDGs)</strong>, serving as the headline metric of the <cite>Sustainable Development Report</cite>.
+            </p>
+          </article>
+
+          <article class="meta-box">
+            <h3>2. Y-Axis: World Happiness Index (3-Year Average)</h3>
+            <p>
+              National life evaluation score (<code>0–10</code>) averaged over the three preceding survey years (e.g., 2022–2024). Ranking countries by their <strong>3-year rolling average</strong> provides a larger combined sample size for more precise estimates.
+            </p>
+          </article>
+
+          <article class="meta-box">
+            <h3>3. Bubble Area &amp; Color: GDP per Capita, PPP (Constant 2021 $)</h3>
+            <p>
+              Aligned with the <cite>World Happiness Report</cite> statistical appendix, wealth is measured via <strong>Purchasing Power Parity (PPP)</strong> at constant 2021 international dollars (latest available year). PPP adjusts for local cost of living, constant prices eliminate inflation distortion, and scaling radius by <code>√GDP</code> ensures bubble area reflects wealth volume.
+            </p>
+          </article>
+        </div>
+
+        <footer class="sources-footer">
+          <strong>Data Sources:</strong>
+          <ul class="sources-list">
+            <li>
+              <a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener noreferrer">
+                World Bank (GDP per capita)
+              </a>
+            </li>
+            <li>
+              <a href="https://dashboards.sdgindex.org/downloads/" target="_blank" rel="noopener noreferrer">
+                Sustainable Development Report 2026 – Data Explorer &amp; Downloads
+              </a>
+            </li>
+            <li>
+              <a href="https://www.worldhappiness.report/data-sharing/" target="_blank" rel="noopener noreferrer">
+                World Happiness Report – Data Sharing
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
