@@ -7,127 +7,191 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=5">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
   <script src="app.js?v=2" defer></script>
   <script src="beeswarm.js?v=2" defer></script>
+  <script src="sankey.js?v=4" defer></script>
+  <script src="scrollspy.js?v=1" defer></script>
 </head>
 <body>
   <div class="container">
-    <header class="page-header">
-      <h1 class="page-title">SCATTER PLOT</h1>
-      <h2>Which countries convert their economic resources into actual human well-being and sustainability?</h2>
-      <div class="header-subbar">
-        <p class="page-subtitle">
-          Comparing 140 nations across <strong>Sustainable Development</strong>, <strong>World Happiness</strong>, and <strong>GDP per capita (PPP)</strong>.
-        </p>
+    <header class="index-bar">
+      <div class="index-bar-inner">
+        <div class="index-brand">
+          <h1 class="index-heading">Chart Index</h1>
+          <span class="index-count" aria-hidden="true">3</span>
+        </div>
 
-        <search class="search-spotlight-area">
-          <form id="country-filter-form" class="filter-form" action="." method="GET">
-            <div class="search-input-group">
-              <span class="search-icon-slot" aria-hidden="true">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <nav class="chart-index-nav" aria-label="Chart types">
+          <ol class="chart-index-list">
+            <li>
+              <a class="chart-index-link" href="#scatter">
+                <svg class="chart-index-icon" viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <circle cx="5.5" cy="14" r="2.1" fill="currentColor" stroke="none"/>
+                  <circle cx="10.5" cy="9.5" r="3.1" fill="currentColor" stroke="none" opacity="0.72"/>
+                  <circle cx="15" cy="5.5" r="2.5" fill="currentColor" stroke="none"/>
+                  <circle cx="14.5" cy="13.5" r="1.4" fill="currentColor" stroke="none" opacity="0.58"/>
+                  <path d="M2.5 3v14.5H17.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-              </span>
-              <input
-                id="country-search"
-                name="countries"
-                class="search-input"
-                type="search"
-                list="country-list"
-                placeholder="(e.g. Costa Rica, Finland...)"
-                autocorrect="off"
-                autocapitalize="off"
-                spellcheck="false"
-                enterkeyhint="search"
-              >
-              <datalist id="country-list"></datalist>
-              <button id="clear-search" class="btn-reset" type="button" aria-label="Reset highlight filter">
-                Reset
-              </button>
-            </div>
-            <p id="search-status" class="visually-hidden" aria-live="polite"></p>
-          </form>
-        </search>
+                <span class="chart-index-text">
+                  <span class="chart-index-name">Scatter Plot</span>
+                  <span class="chart-index-meta">GDP · Happiness · SDI</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="chart-index-link" href="#beeswarm">
+                <svg class="chart-index-icon" viewBox="0 0 20 20" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <circle cx="4.5" cy="6.5" r="1.6"/>
+                  <circle cx="8" cy="5.5" r="1.6"/>
+                  <circle cx="10.5" cy="7.5" r="1.6"/>
+                  <circle cx="14" cy="6" r="1.6"/>
+                  <circle cx="6.5" cy="13.5" r="1.6" opacity="0.72"/>
+                  <circle cx="9.5" cy="12" r="1.6" opacity="0.72"/>
+                  <circle cx="12.5" cy="14" r="1.6" opacity="0.72"/>
+                  <circle cx="15.5" cy="13" r="1.6" opacity="0.72"/>
+                </svg>
+                <span class="chart-index-text">
+                  <span class="chart-index-name">Beeswarm Plot</span>
+                  <span class="chart-index-meta">WHO Healthy Life</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="chart-index-link" href="#sankey">
+                <svg class="chart-index-icon" viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                  <path d="M3 5.5C8.5 5.5 11.5 5.5 17 5.5" opacity="0.9"/>
+                  <path d="M3 9.5C9 9.5 11 14.5 17 14.5" opacity="0.58"/>
+                  <path d="M3 14.5C9 14.5 11 10 17 10" opacity="0.76"/>
+                </svg>
+                <span class="chart-index-text">
+                  <span class="chart-index-name">Sankey Diagram</span>
+                  <span class="chart-index-meta">Sweden Waste Flow</span>
+                </span>
+              </a>
+            </li>
+          </ol>
+        </nav>
       </div>
     </header>
 
     <main>
-      <section class="viz-section" aria-label="Interactive Bubble Chart">
-        <div
-          id="bubble-plot"
-          class="chart-canvas"
-          role="img"
-          aria-label="Bubble plot with Sustainable Development Index on the X-axis, World Happiness Score on the Y-axis, and bubble area and color proportional to GDP per capita PPP"
-        ></div>
-      </section>
-
-      <section class="methodology-section" aria-labelledby="methodology-heading">
-        <details class="notion-toggle">
-          <summary class="notion-toggle-summary">
-            <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-            <h2 id="methodology-heading" class="section-heading">
-              About This Visualization &amp; Methodology
-            </h2>
-          </summary>
-
-          <div class="notion-toggle-content">
-            <p class="section-lead">
-              <strong>Core Question:</strong> Which countries are highly efficient at converting their economic resources into actual human well-being and sustainability, and which wealthy nations are underperforming?
+      <section id="scatter" class="chart-section scatter-section" tabindex="-1">
+        <header class="page-header">
+          <h2 id="scatter-title" class="page-title">SCATTER PLOT</h2>
+          <p class="section-question">Which countries convert their economic resources into actual human well-being and sustainability?</p>
+          <div class="header-subbar">
+            <p class="page-subtitle">
+              Comparing 140 nations across <strong>Sustainable Development</strong>, <strong>World Happiness</strong>, and <strong>GDP per capita (PPP)</strong>.
             </p>
 
-            <div class="metadata-grid">
-              <article class="meta-col">
-                <h3>1. X-Axis: Sustainable Development (Overall Score)</h3>
-                <p>
-                  Normalized score (<code>0–100</code>) measuring each country's total achievement across all <strong>17 UN Sustainable Development Goals (SDGs)</strong>, serving as the headline metric of the <cite>Sustainable Development Report</cite>.
-                </p>
-              </article>
-
-              <article class="meta-col">
-                <h3>2. Y-Axis: World Happiness Index (3-Year Average)</h3>
-                <p>
-                  National life evaluation score (<code>0–10</code>) averaged over the three preceding survey years (e.g., 2022–2024). Ranking countries by their <strong>3-year rolling average</strong> provides a larger combined sample size for more precise estimates.
-                </p>
-              </article>
-
-              <article class="meta-col">
-                <h3>3. Bubble Area &amp; Color: GDP per Capita, PPP (Constant 2021 $)</h3>
-                <p>
-                  Aligned with the <cite>World Happiness Report</cite> statistical appendix, wealth is measured via <strong>Purchasing Power Parity (PPP)</strong> at constant 2021 international dollars (latest available year). PPP adjusts for local cost of living, constant prices eliminate inflation distortion, and scaling radius by <code>√GDP</code> ensures bubble area reflects wealth volume.
-                </p>
-              </article>
-            </div>
-
-            <footer class="sources-footer">
-              <strong>Data Sources:</strong>
-              <ul class="sources-list">
-                <li>
-                  <a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener noreferrer">
-                    World Bank (GDP per capita)
-                  </a>
-                </li>
-                <li>
-                  <a href="https://dashboards.sdgindex.org/downloads/" target="_blank" rel="noopener noreferrer">
-                    Sustainable Development Report 2026 – Data Explorer &amp; Downloads
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.worldhappiness.report/data-sharing/" target="_blank" rel="noopener noreferrer">
-                    World Happiness Report – Data Sharing
-                  </a>
-                </li>
-              </ul>
-            </footer>
+            <search class="search-spotlight-area">
+              <form id="country-filter-form" class="filter-form" action="." method="GET">
+                <div class="search-input-group">
+                  <span class="search-icon-slot" aria-hidden="true">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </span>
+                  <input
+                    id="country-search"
+                    name="countries"
+                    class="search-input"
+                    type="search"
+                    list="country-list"
+                    placeholder="(e.g. Costa Rica, Finland...)"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    enterkeyhint="search"
+                  >
+                  <datalist id="country-list"></datalist>
+                  <button id="clear-search" class="btn-reset" type="button" aria-label="Reset highlight filter">
+                    Reset
+                  </button>
+                </div>
+                <p id="search-status" class="visually-hidden" aria-live="polite"></p>
+              </form>
+            </search>
           </div>
-        </details>
+        </header>
+
+        <div class="viz-section">
+          <div
+            id="bubble-plot"
+            class="chart-canvas"
+            role="img"
+            aria-label="Bubble plot with Sustainable Development Index on the X-axis, World Happiness Score on the Y-axis, and bubble area and color proportional to GDP per capita PPP"
+          ></div>
+        </div>
+
+        <div class="methodology-section">
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span id="methodology-heading" class="section-heading">
+                About This Visualization &amp; Methodology
+              </span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <p class="section-lead">
+                <strong>Core Question:</strong> Which countries are highly efficient at converting their economic resources into actual human well-being and sustainability, and which wealthy nations are underperforming?
+              </p>
+
+              <div class="metadata-grid">
+                <article class="meta-col">
+                  <h3>1. X-Axis: Sustainable Development (Overall Score)</h3>
+                  <p>
+                    Normalized score (<code>0–100</code>) measuring each country's total achievement across all <strong>17 UN Sustainable Development Goals (SDGs)</strong>, serving as the headline metric of the <cite>Sustainable Development Report</cite>.
+                  </p>
+                </article>
+
+                <article class="meta-col">
+                  <h3>2. Y-Axis: World Happiness Index (3-Year Average)</h3>
+                  <p>
+                    National life evaluation score (<code>0–10</code>) averaged over the three preceding survey years (e.g., 2022–2024). Ranking countries by their <strong>3-year rolling average</strong> provides a larger combined sample size for more precise estimates.
+                  </p>
+                </article>
+
+                <article class="meta-col">
+                  <h3>3. Bubble Area &amp; Color: GDP per Capita, PPP (Constant 2021 $)</h3>
+                  <p>
+                    Aligned with the <cite>World Happiness Report</cite> statistical appendix, wealth is measured via <strong>Purchasing Power Parity (PPP)</strong> at constant 2021 international dollars (latest available year). PPP adjusts for local cost of living, constant prices eliminate inflation distortion, and scaling radius by <code>√GDP</code> ensures bubble area reflects wealth volume.
+                  </p>
+                </article>
+              </div>
+
+              <footer class="sources-footer">
+                <strong>Data Sources:</strong>
+                <ul class="sources-list">
+                  <li>
+                    <a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener noreferrer">
+                      World Bank (GDP per capita)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://dashboards.sdgindex.org/downloads/" target="_blank" rel="noopener noreferrer">
+                      Sustainable Development Report 2026 – Data Explorer &amp; Downloads
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.worldhappiness.report/data-sharing/" target="_blank" rel="noopener noreferrer">
+                      World Happiness Report – Data Sharing
+                    </a>
+                  </li>
+                </ul>
+              </footer>
+            </div>
+          </details>
+        </div>
       </section>
 
-      <section class="beeswarm-section" aria-labelledby="beeswarm-title">
+      <section id="beeswarm" class="chart-section beeswarm-section" tabindex="-1">
         <header class="section-header">
           <h2 id="beeswarm-title" class="page-title">BEESWARM PLOT</h2>
           <p class="section-question">
@@ -301,6 +365,146 @@
                   <li>
                     <a href="https://docs.google.com/spreadsheets/d/1_0_lEZIsSy73rWGPr3t85KmsYqevKv7M8AJuOW2NFrY/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer">
                       Source Dataset (Google Sheets)
+                    </a>
+                  </li>
+                </ul>
+              </footer>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section id="sankey" class="chart-section sankey-section" tabindex="-1">
+        <header class="section-header">
+          <h2 id="sankey-title" class="page-title">SANKEY DIAGRAM</h2>
+          <p class="section-question">
+            How did Sweden shift 50 years of municipal waste away from landfill?
+          </p>
+          <div class="header-subbar">
+            <p class="page-subtitle">
+              2-stage flow of <strong>Swedish municipal waste (2025 → 1975)</strong> in tonnes across <strong>6 treatment pathways</strong> (Source: <cite>Avfall Sverige</cite>).
+            </p>
+          </div>
+        </header>
+
+        <div class="sankey-controls">
+          <fieldset class="control-group">
+            <legend class="control-legend">Temporal Grouping</legend>
+            <div class="segmented-control">
+              <label class="segmented-option">
+                <input type="radio" name="sankey-grouping" value="lustros" checked>
+                <span>5-Year Periods (Annual Avg)</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="sankey-grouping" value="milestones">
+                <span>Milestones (Every 5 Yrs)</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="sankey-grouping" value="all">
+                <span>All Years (36 Records)</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <figure class="viz-figure">
+          <div
+            id="sankey-plot"
+            class="chart-canvas chart-canvas--sankey"
+            role="img"
+            aria-label="2-stage Sankey diagram showing Swedish municipal waste flows from milestone years 2025 down to 1975 into 6 treatment pathways"
+            aria-describedby="sankey-caption"
+          ></div>
+          <figcaption id="sankey-caption" class="viz-caption">
+            Ten 5-year periods (1975–2025) ordered chronologically from newest (2020–2025, top) to oldest (1975–1979, bottom) showing average annual metric tonnes.
+          </figcaption>
+        </figure>
+
+        <div class="beeswarm-disclosures">
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span class="section-heading">Accessible Data Table (Treatment Volumes in Tonnes)</span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <div class="table-scroll-container" role="region" aria-labelledby="waste-table-caption" tabindex="0">
+                <table class="data-table">
+                  <caption id="waste-table-caption">
+                    Swedish municipal waste average annual treatment volumes in tonnes per 5-year period (1975–2025) (Source: Avfall Sverige).
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th id="waste-table-th-year" scope="col">5-Year Period</th>
+                      <th scope="col">Material Recycling</th>
+                      <th scope="col">Biological Treatment</th>
+                      <th scope="col">Energy Recovery</th>
+                      <th scope="col">Landfill</th>
+                      <th scope="col">Prepared for Reuse</th>
+                      <th scope="col">Construction Recycling</th>
+                      <th scope="col">Total (t)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sankey-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span class="section-heading">About This Sankey Diagram &amp; Methodology</span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <p class="section-lead">
+                <strong>50 Years of Waste Transition:</strong> Between 1975 and 2025, Sweden reduced municipal landfill from <strong>1.62M tonnes (62.3%)</strong> to <strong>67,370 tonnes (1.5%)</strong> while scaling energy recovery, material recycling, and biological treatment.
+              </p>
+
+              <div class="metadata-grid">
+                <article class="meta-col">
+                  <h3>1. Left Stage: 5-Year Periods</h3>
+                  <p>
+                    Data is grouped by <strong>10 five-year periods</strong> (from <strong>2020–2025</strong> down to <strong>1975–1979</strong>) showing annual average tonnes treated. This eliminates spaghetti ribbons, saves vertical space, and ensures clean visual comparability across the 50-year transition.
+                  </p>
+                </article>
+
+                <article class="meta-col">
+                  <h3>2. Right Stage: Treatment Pathways</h3>
+                  <p>
+                    Each ribbon width is proportional to metric tonnes treated across <strong>Energy Recovery</strong>, <strong>Material Recycling</strong>, <strong>Biological Treatment</strong>, <strong>Landfill</strong>, <strong>Construction Material Recycling</strong> (since 2020), and <strong>Prepared for Reuse</strong> (2025).
+                  </p>
+                </article>
+
+                <article class="meta-col">
+                  <h3>3. Multi-Mode Exploration</h3>
+                  <p>
+                    Use the control above to switch between <strong>5-Year Periods (Annual Avg)</strong>, <strong>Milestones (Every 5 Yrs)</strong>, or view all <strong>36 yearly records</strong>.
+                  </p>
+                </article>
+              </div>
+
+              <footer class="sources-footer">
+                <strong>Data Sources:</strong>
+                <ul class="sources-list">
+                  <li>
+                    <a href="https://www.avfallsverige.se/in-english/" target="_blank" rel="noopener noreferrer">
+                      Avfall Sverige — Swedish Waste Management (1975–2019)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.avfallsverige.se/media/ca2fijue/swedish-waste-management-2024.pdf" target="_blank" rel="noopener noreferrer">
+                      Swedish Waste Management 2024 Report (PDF, 2020–2023)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.avfallsverige.se/media/bigjrvsu/avfallstrenden_a4_2024.pdf" target="_blank" rel="noopener noreferrer">
+                      Avfallstrenden 2024 (PDF, 2024–2025)
                     </a>
                   </li>
                 </ul>
