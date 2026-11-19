@@ -168,8 +168,9 @@ async function initApp() {
       colorscale: PLASMA_COLORSCALE,
       showscale: true,
       colorbar: {
-        title: { text: "GDP per capita<br>PPP ($)" },
+        title: { text: "GDP per capita<br>PPP ($)", font: { size: 18 } },
         tickprefix: "$",
+        tickfont: { size: 15 },
       },
       opacity: data.map(() => DEFAULT_OPACITY),
       line: {
@@ -181,23 +182,39 @@ async function initApp() {
 
   const layout = {
     xaxis: {
-      title: { text: "Sustainable Development Index Score (SDI_work, 0–100)" },
+      title: {
+        text: "Sustainable Development Index Score (SDI_work, 0–100)",
+        font: { size: 20 },
+        standoff: 18,
+      },
+      tickfont: { size: 16 },
       zeroline: false,
     },
     yaxis: {
-      title: { text: "World Happiness Score (3-Year Avg, 0–10)" },
+      title: {
+        text: "World Happiness Score (3-Year Avg, 0–10)",
+        font: { size: 20 },
+        standoff: 18,
+      },
+      tickfont: { size: 16 },
       zeroline: false,
     },
     font: {
       family: '"National 2", "National", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif',
-      size: 13.5,
+      size: 17,
       color: "#0f172a",
+    },
+    hoverlabel: {
+      font: {
+        family: '"National 2", "National", "Plus Jakarta Sans", sans-serif',
+        size: 15,
+      },
     },
     hovermode: "closest",
     template: "plotly_white",
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
-    margin: { l: 55, r: 40, t: 25, b: 55 },
+    margin: { l: 80, r: 40, t: 30, b: 80 },
   };
 
   await Plotly.newPlot(plotEl, [trace], layout, {
@@ -263,7 +280,7 @@ async function initApp() {
             bordercolor: "#0f172a",
             borderwidth: 1.2,
             borderpad: 4,
-            font: { family: '"National 2", "National", "Plus Jakarta Sans", sans-serif', size: 12, color: "#0f172a" },
+            font: { family: '"National 2", "National", "Plus Jakarta Sans", sans-serif', size: 15, color: "#0f172a" },
           });
         }
       } else {

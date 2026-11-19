@@ -331,3 +331,198 @@ a:focus-visible {
   border: 0;
   white-space: nowrap;
 }
+
+/* ==========================================================================
+   Beeswarm Plot Section
+   ========================================================================== */
+
+.beeswarm-section {
+  margin-block-start: 4.5rem;
+  padding-block-start: 3.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.section-header {
+  margin-block-end: 1.75rem;
+}
+
+.section-question {
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin-block: 0 1.25rem;
+}
+
+.beeswarm-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1.25rem 2rem;
+  margin-block-end: 1.5rem;
+}
+
+.control-group {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.control-legend {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 0;
+}
+
+.segmented-control {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background-color: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.segmented-option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.segmented-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.segmented-option span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 36px;
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.segmented-option:hover span {
+  background-color: #f1f5f9;
+  color: var(--text);
+}
+
+.segmented-option input[type="radio"]:checked + span {
+  background-color: var(--text);
+  color: #ffffff;
+}
+
+.segmented-option input[type="radio"]:focus-visible + span {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.viz-figure {
+  margin: 0 0 2rem;
+}
+
+.chart-canvas--beeswarm {
+  min-height: 620px;
+}
+
+.viz-caption {
+  margin-block-start: 0.75rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.beeswarm-disclosures {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  padding-block-start: 1.5rem;
+}
+
+/* Accessible Data Table */
+.table-scroll-container {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: #ffffff;
+}
+
+.table-scroll-container:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  text-align: left;
+}
+
+.data-table caption {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: #f8fafc;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f1f5f9;
+  color: var(--text);
+  font-weight: 700;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.data-table tbody th,
+.data-table tbody td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+.data-table tbody th {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.data-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+@media (max-width: 768px) {
+  .beeswarm-section {
+    margin-block-start: 3rem;
+    padding-block-start: 2.25rem;
+  }
+
+  .section-question {
+    font-size: 1.2rem;
+  }
+}
