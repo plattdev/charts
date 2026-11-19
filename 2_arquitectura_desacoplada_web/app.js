@@ -10,6 +10,20 @@ const DEFAULT_OPACITY = 0.60; // Punto 2: opacidad reducida para distinguir acum
 const DIMMED_OPACITY = 0.12;
 const HIGHLIGHT_OPACITY = 0.98;
 
+/** Plasma colorscale from Method 1 (Plotly Express) */
+const PLASMA_COLORSCALE = [
+  [0.0, "#0d0887"],
+  [0.1111111111111111, "#46039f"],
+  [0.2222222222222222, "#7201a8"],
+  [0.3333333333333333, "#9c179e"],
+  [0.4444444444444444, "#bd3786"],
+  [0.5555555555555556, "#d8576b"],
+  [0.6666666666666666, "#ed7953"],
+  [0.7777777777777778, "#fb9f3a"],
+  [0.8888888888888888, "#fdca26"],
+  [1.0, "#f0f921"],
+];
+
 /** Normalize strings for accent-insensitive and case-insensitive matching */
 function normalizeText(str) {
   return str
@@ -115,42 +129,6 @@ function findMatchingIndices(countries, rawQuery) {
   return Array.from(matchedSet);
 }
 
-/** Render removable country badges below the search bar */
-function renderChips(chipsContainer, matchedCountries, onRemoveCountry) {
-  chipsContainer.replaceChildren();
-
-  if (matchedCountries.length === 0) {
-    return;
-  }
-
-  if (matchedCountries.length > 12) {
-    const summary = document.createElement("span");
-    summary.className = "chip chip-summary";
-    summary.textContent = `${matchedCountries.length} countries highlighted — keep typing or add commas`;
-    chipsContainer.appendChild(summary);
-    return;
-  }
-
-  const fragment = document.createDocumentFragment();
-  for (const item of matchedCountries) {
-    const chip = document.createElement("span");
-    chip.className = "chip";
-    chip.textContent = item.country;
-
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.className = "chip-remove";
-    removeBtn.setAttribute("aria-label", `Remove ${item.country}`);
-    removeBtn.textContent = "×";
-    removeBtn.addEventListener("click", () => onRemoveCountry(item.country));
-
-    chip.appendChild(removeBtn);
-    fragment.appendChild(chip);
-  }
-
-  chipsContainer.appendChild(fragment);
-}
-
 /** Initialize chart and interactive search controls */
 async function initApp() {
   const plotEl = document.getElementById("bubble-plot");
@@ -158,7 +136,6 @@ async function initApp() {
   const searchInput = document.getElementById("country-search");
   const datalistEl = document.getElementById("country-list");
   const clearBtn = document.getElementById("clear-search");
-  const chipsContainer = document.getElementById("active-chips");
   const statusEl = document.getElementById("search-status");
 
   const data = await loadCountriesData();
@@ -188,7 +165,7 @@ async function initApp() {
       size: data.map((d) => d.sqrt_gdp * BUBBLE_SCALE),
       sizemode: "diameter",
       color: data.map((d) => d.gdp_ppp),
-      colorscale: "Plasma",
+      colorscale: PLASMA_COLORSCALE,
       showscale: true,
       colorbar: {
         title: { text: "GDP per capita<br>PPP ($)" },
@@ -212,7 +189,7 @@ async function initApp() {
       zeroline: false,
     },
     font: {
-      family: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      family: '"National 2", "National", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif',
       size: 13.5,
       color: "#0f172a",
     },
@@ -220,33 +197,13 @@ async function initApp() {
     template: "plotly_white",
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
-    margin: { l: 55, r: 30, t: 25, b: 55 },
+    margin: { l: 55, r: 40, t: 25, b: 55 },
   };
 
   await Plotly.newPlot(plotEl, [trace], layout, {
     responsive: true,
     displaylogo: false,
   });
-
-  function removeCountryFromQuery(countryToRemove) {
-    const removeIdx = data.findIndex((d) => d.country === countryToRemove);
-    const remainingTokens = searchInput.value
-      .split(",")
-      .map((t) => t.trim())
-      .filter((t) => {
-        if (!t) return false;
-        const tokenMatches = findMatchingIndices(data, t);
-        // Remove token if it uniquely matched the removed country (or exact match)
-        if (tokenMatches.length === 1 && tokenMatches[0] === removeIdx) {
-          return false;
-        }
-        return normalizeText(t) !== normalizeText(countryToRemove);
-      });
-
-    searchInput.value = remainingTokens.join(", ");
-    applySearch(searchInput.value);
-    searchInput.focus();
-  }
 
   function applySearch(rawQuery) {
     updateDatalistSuggestions(datalistEl, data, rawQuery);
@@ -266,7 +223,10 @@ async function initApp() {
         [0]
       );
       Plotly.relayout(plotEl, { annotations: [] });
-      renderChips(chipsContainer, [], removeCountryFromQuery);
+      const counterEl = document.getElementById("country-counter");
+      if (counterEl) {
+        counterEl.textContent = `${data.length} countries`;
+      }
       statusEl.textContent = "Showing all 140 countries.";
       return;
     }
@@ -283,7 +243,7 @@ async function initApp() {
     data.forEach((item, idx) => {
       if (matchedSet.has(idx)) {
         opacities.push(HIGHLIGHT_OPACITY);
-        lineWidths.push(2.8);
+        lineWidths.push(3);
         lineColors.push("#0f172a");
 
         // Show callout labels when up to 15 countries are highlighted to avoid clutter
@@ -303,7 +263,7 @@ async function initApp() {
             bordercolor: "#0f172a",
             borderwidth: 1.2,
             borderpad: 4,
-            font: { size: 12, color: "#0f172a" },
+            font: { family: '"National 2", "National", "Plus Jakarta Sans", sans-serif', size: 12, color: "#0f172a" },
           });
         }
       } else {
@@ -312,6 +272,11 @@ async function initApp() {
         lineColors.push("#ffffff");
       }
     });
+
+    const counterEl = document.getElementById("country-counter");
+    if (counterEl) {
+      counterEl.textContent = `${matchedIndices.length} of ${data.length} countries`;
+    }
 
     Plotly.restyle(
       plotEl,
@@ -324,7 +289,6 @@ async function initApp() {
     );
     Plotly.relayout(plotEl, { annotations });
 
-    renderChips(chipsContainer, matchedCountries, removeCountryFromQuery);
     statusEl.textContent =
       matchedCountries.length === 0
         ? "No matching countries found."

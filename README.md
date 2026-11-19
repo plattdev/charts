@@ -20,17 +20,3 @@ El repositorio está organizado en **tres arquitecturas independientes** para fa
   - `index.html` + `styles.css` + `app.js`: Interfaz web moderna con Plotly.js, búsqueda múltiple de países separados por comas y chips interactivos.
 * **Ideal para:** Portfolios web modernos, integración con frameworks o evolución futura.
 
-### 📁 [`3_arquitectura_3d_threejs/`](./3_arquitectura_3d_threejs/)
-* **Enfoque:** Visualización 3D WebGL (Three.js).
-* **Componentes clave:**
-  - `build_data.py`: Mismo pipeline ETL que la Arquitectura 2.
-  - `scene.js`: Escena Three.js con esferas PBR, iluminación de estudio, ejes 3D y controles orbitales.
-  - `index.html` + `styles.css`: Interfaz dark-mode inmersiva con tooltip en hover y búsqueda por comas.
-* **Eje Z:** Añade `log₁₀(GDP per capita, PPP)` como tercera dimensión espacial, permitiendo explorar visualmente la relación tridimensional entre sostenibilidad, felicidad y riqueza.
-* **Ideal para:** Portfolios de alto impacto visual, narrativas interactivas y futura extensión con animaciones cinemáticas.
-
----
-
-## Documentación metodológica
-Para consultar la justificación estadística de cada variable, fórmulas y fuentes oficiales, revisa el archivo `METADATA.md` incluido en cada carpeta de arquitectura.
-
