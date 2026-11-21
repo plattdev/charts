@@ -52,6 +52,66 @@ body {
 }
 
 /* ==========================================================================
+   Portfolio Header (Data Analyst Portfolio Intro)
+   ========================================================================== */
+
+.portfolio-header {
+  margin-block: 0.5rem 1.75rem;
+  padding-block-end: 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.portfolio-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-block-end: 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.portfolio-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  background-color: var(--surface-gray);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  color: var(--text);
+  font-size: 0.76rem;
+}
+
+.portfolio-dot {
+  color: var(--muted);
+}
+
+.portfolio-subtag {
+  color: var(--text-secondary);
+}
+
+.portfolio-title {
+  font-family: "National 2", "National", "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: clamp(1.65rem, 2.8vw, 2.45rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.18;
+  color: var(--text);
+  margin-block: 0 0.6rem;
+  max-width: 1040px;
+  text-wrap: balance;
+}
+
+.portfolio-lead {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 880px;
+  margin: 0;
+}
+
+/* ==========================================================================
    Chart Index Navigation Bar (Sticky + CSS Scrollspy)
    ========================================================================== */
 
@@ -70,11 +130,11 @@ body {
   flex-wrap: wrap;
   padding-block: 0.65rem;
   padding-inline: 1rem;
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 0;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 }
 
@@ -101,9 +161,9 @@ body {
   min-inline-size: 1.45rem;
   block-size: 1.45rem;
   padding-inline: 0.35rem;
-  border-radius: 999px;
+  border-radius: 0;
   background-color: var(--surface-gray);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--text);
@@ -132,7 +192,7 @@ body {
   min-block-size: 44px;
   padding-block: 0.45rem;
   padding-inline: 0.85rem;
-  border-radius: 8px;
+  border-radius: 0;
   border: 1px solid var(--border-subtle);
   background-color: #ffffff;
   color: var(--text);
@@ -199,7 +259,7 @@ body {
 .chart-section:focus-visible {
   outline: 3px solid var(--focus-ring);
   outline-offset: 8px;
-  border-radius: 6px;
+  border-radius: 0;
 }
 
 @media (forced-colors: active) {
@@ -219,6 +279,22 @@ body {
     padding-block: 1rem 3.5rem;
     background-image: none;
     background-color: var(--surface-gray);
+  }
+  .portfolio-header {
+    margin-block: 0.25rem 1.25rem;
+    padding-block-end: 1rem;
+  }
+  .portfolio-kicker {
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    font-size: 0.72rem;
+  }
+  .portfolio-title {
+    font-size: 1.45rem;
+  }
+  .portfolio-lead {
+    font-size: 0.92rem;
+    line-height: 1.5;
   }
   .index-bar {
     inset-block-start: 0.5rem;
@@ -307,7 +383,7 @@ body {
   align-items: center;
   background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 0;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
@@ -356,7 +432,7 @@ body {
   font-weight: 600;
   padding: 0.35rem 0.75rem;
   margin-right: 0.35rem;
-  border-radius: 4px;
+  border-radius: 0;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
@@ -402,7 +478,7 @@ a:focus-visible {
   list-style: none;
   padding: 0.25rem 0.5rem;
   margin-inline-start: -0.5rem;
-  border-radius: 5px;
+  border-radius: 0;
   transition: background-color 0.12s ease;
 }
 
@@ -635,7 +711,7 @@ a:focus-visible {
   padding: 0.25rem;
   background-color: #ffffff;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
@@ -660,7 +736,7 @@ a:focus-visible {
   justify-content: center;
   min-block-size: 36px;
   padding: 0.35rem 0.85rem;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--text-secondary);
@@ -711,7 +787,7 @@ a:focus-visible {
   max-height: 420px;
   overflow: auto;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 0;
   background-color: #ffffff;
 }
 
@@ -765,7 +841,7 @@ a:focus-visible {
 
 @media (max-width: 768px) {
   .beeswarm-section,
-  .sankey-section,
+  .streamgraph-section,
   .ozone-section {
     margin-block-start: 3rem;
     padding-block-start: 2.25rem;
@@ -777,16 +853,16 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   Sankey Diagram Section
+   Streamgraph Section (Swedish Municipal Waste Transition, 1975–2025)
    ========================================================================== */
 
-.sankey-section {
+.streamgraph-section {
   margin-block-start: 4.5rem;
   padding-block-start: 3.5rem;
   border-top: 2px solid var(--border);
 }
 
-.sankey-controls {
+.streamgraph-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
@@ -794,8 +870,155 @@ a:focus-visible {
   margin-block-end: 1.5rem;
 }
 
-.chart-canvas--sankey {
-  min-height: 640px;
+.streamgraph-canvas {
+  width: 100%;
+}
+
+.streamgraph-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.streamgraph-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.stream-axis-label {
+  font-size: 12px;
+  font-weight: 500;
+  fill: #64748b;
+}
+
+.stream-band {
+  transition: fill-opacity 0.16s ease;
+}
+
+.stream-band-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.28);
+}
+
+.stream-overlay {
+  cursor: crosshair;
+}
+
+.stream-tooltip {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  min-width: 220px;
+  padding: 0.65rem 0.85rem;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.stream-tooltip-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.88rem;
+}
+
+.stream-tooltip-head span {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.stream-tooltip-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stream-tooltip-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.stream-tooltip-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stream-tooltip-name {
+  flex: 1;
+  color: var(--text-secondary);
+}
+
+.stream-tooltip-val {
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.stream-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 0.9rem;
+  margin-block-start: 1rem;
+  padding-block-start: 0.85rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.stream-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.45rem;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 0;
+  cursor: pointer;
+  transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.stream-legend-item:hover,
+.stream-legend-item.is-active {
+  color: var(--text);
+  background-color: #f1f5f9;
+}
+
+.stream-legend-item.is-dimmed {
+  opacity: 0.4;
+}
+
+.stream-legend-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 0;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stream-band,
+  .stream-legend-item {
+    transition: none;
+  }
 }
 
 /* ==========================================================================
@@ -842,7 +1065,7 @@ a:focus-visible {
   color: var(--text);
   background-color: #ffffff;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0;
   cursor: pointer;
 }
 
@@ -929,5 +1152,156 @@ a:focus-visible {
   .ozone-half--right {
     stroke: CanvasText;
     stroke-width: 2;
+  }
+}
+
+/* ==========================================================================
+   Waffle Chart Section (City-Scale Climate Hazards: 1.5°C -> 2.0°C -> 3.0°C)
+   ========================================================================== */
+
+.waffle-section {
+  margin-block-start: 4.5rem;
+  padding-block-start: 3.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.waffle-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem 1.75rem;
+  margin-block-end: 2rem;
+}
+
+.waffle-threshold-note {
+  margin: 0 0 0.55rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.waffle-canvas {
+  width: 100%;
+  padding-block: 0.5rem 0.25rem;
+}
+
+.waffle-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1.25rem 1.5rem;
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.waffle-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.waffle-panel-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.waffle-scenario-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.waffle-pct {
+  font-size: 2.35rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.waffle-detail {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.waffle-svg {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+}
+
+.waffle-cell {
+  transition: fill 0.25s ease;
+}
+
+.waffle-arrow {
+  font-size: 1.65rem;
+  font-weight: 300;
+  color: #94a3b8;
+  user-select: none;
+  padding-top: 3.5rem;
+}
+
+.waffle-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.65rem 1.75rem;
+  margin-block-start: 1.75rem;
+  padding-block-start: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.waffle-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.waffle-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 0;
+}
+
+.waffle-legend-delta strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .waffle-section {
+    margin-block-start: 3rem;
+    padding-block-start: 2.25rem;
+  }
+
+  .waffle-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .waffle-arrow {
+    display: none;
+  }
+
+  .waffle-svg {
+    max-width: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waffle-cell {
+    transition: none;
   }
 }

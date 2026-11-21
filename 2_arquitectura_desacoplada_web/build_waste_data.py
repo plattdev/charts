@@ -1,5 +1,5 @@
 """Cleans the Avfall Sverige Swedish Waste Management CSV (1975-2025) and exports
-data/waste.json and data/waste_fallback.js for the interactive Sankey diagram."""
+data/waste.json and data/waste_fallback.js for the interactive Streamgraph."""
 
 import csv
 import json

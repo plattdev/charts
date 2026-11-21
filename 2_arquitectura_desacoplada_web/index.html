@@ -7,21 +7,34 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=12">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
   <script src="app.js?v=2" defer></script>
   <script src="beeswarm.js?v=4" defer></script>
-  <script src="sankey.js?v=4" defer></script>
+  <script src="streamgraph.js?v=2" defer></script>
   <script src="ozone.js?v=2" defer></script>
+  <script src="waffle.js?v=2" defer></script>
   <script src="scrollspy.js?v=1" defer></script>
 </head>
 <body>
   <div class="container">
+    <header class="portfolio-header">
+      <div class="portfolio-kicker">
+        <span class="portfolio-tag">Data Analyst Portfolio</span>
+        <span class="portfolio-dot" aria-hidden="true">·</span>
+        <span class="portfolio-subtag">Interactive Data Visualizations</span>
+      </div>
+      <h1 class="portfolio-title">Scroll or select a selection of charts created with Open data</h1>
+      <p class="portfolio-lead">
+        Curated interactive views, distributions, and multi-dimensional flows built with public open data to explore global development, health equity, sustainability, and climate hazards.
+      </p>
+    </header>
+
     <header class="index-bar">
       <div class="index-bar-inner">
         <div class="index-brand">
-          <h1 class="index-heading">Chart Index</h1>
-          <span class="index-count" aria-hidden="true">4</span>
+          <span class="index-heading">Chart Index</span>
+          <span class="index-count" aria-hidden="true">5</span>
         </div>
 
         <nav class="chart-index-nav" aria-label="Chart types">
@@ -60,14 +73,14 @@
               </a>
             </li>
             <li>
-              <a class="chart-index-link" href="#sankey">
-                <svg class="chart-index-icon" viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                  <path d="M3 5.5C8.5 5.5 11.5 5.5 17 5.5" opacity="0.9"/>
-                  <path d="M3 9.5C9 9.5 11 14.5 17 14.5" opacity="0.58"/>
-                  <path d="M3 14.5C9 14.5 11 10 17 10" opacity="0.76"/>
+              <a class="chart-index-link" href="#streamgraph">
+                <svg class="chart-index-icon" viewBox="0 0 20 20" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <path d="M2 10.5C5.5 7 9.5 6.5 13 8.5C15.5 10 17 8.5 18 7.5V12.5C16.5 14 14 14.5 11.5 13C8.5 11 5 11.5 2 14Z" opacity="0.9"/>
+                  <path d="M2 7.5C5.5 4.5 9.5 4 13 6C15.5 7.5 17 6 18 5V7.5C17 8.5 15.5 10 13 8.5C9.5 6.5 5.5 7 2 10.5Z" opacity="0.45"/>
+                  <path d="M2 14C5 11.5 8.5 11 11.5 13C14 14.5 16.5 14 18 12.5V15.5C16 17 13.5 17 11 15.5C8 14 5 14.5 2 16.5Z" opacity="0.58"/>
                 </svg>
                 <span class="chart-index-text">
-                  <span class="chart-index-name">Sankey Diagram</span>
+                  <span class="chart-index-name">Streamgraph</span>
                   <span class="chart-index-meta">Sweden Waste Flow</span>
                 </span>
               </a>
@@ -81,6 +94,25 @@
                 <span class="chart-index-text">
                   <span class="chart-index-name">Proportional Areas</span>
                   <span class="chart-index-meta">Ozone Hole Recovery</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="chart-index-link" href="#waffle">
+                <svg class="chart-index-icon" viewBox="0 0 20 20" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <rect x="2.5" y="2.5" width="4" height="4" opacity="0.3"/>
+                  <rect x="8" y="2.5" width="4" height="4" opacity="0.3"/>
+                  <rect x="13.5" y="2.5" width="4" height="4" opacity="0.3"/>
+                  <rect x="2.5" y="8" width="4" height="4"/>
+                  <rect x="8" y="8" width="4" height="4"/>
+                  <rect x="13.5" y="8" width="4" height="4" opacity="0.3"/>
+                  <rect x="2.5" y="13.5" width="4" height="4"/>
+                  <rect x="8" y="13.5" width="4" height="4"/>
+                  <rect x="13.5" y="13.5" width="4" height="4"/>
+                </svg>
+                <span class="chart-index-text">
+                  <span class="chart-index-name">Waffle Chart</span>
+                  <span class="chart-index-meta">City Climate Hazards</span>
                 </span>
               </a>
             </li>
@@ -365,51 +397,45 @@
         </div>
       </section>
 
-      <section id="sankey" class="chart-section sankey-section" tabindex="-1">
+      <section id="streamgraph" class="chart-section streamgraph-section" tabindex="-1">
         <header class="section-header">
-          <h2 id="sankey-title" class="page-title">SANKEY DIAGRAM</h2>
+          <h2 id="streamgraph-title" class="page-title">STREAMGRAPH</h2>
           <p class="section-question">
             How did Sweden shift 50 years of municipal waste away from landfill?
           </p>
-          <div class="header-subbar">
-            <p class="page-subtitle">
-              2-stage flow of <strong>Swedish municipal waste (2025 → 1975)</strong> in tonnes across <strong>6 treatment pathways</strong> (Source: <cite>Avfall Sverige</cite>).
-            </p>
-          </div>
+          <p class="page-subtitle">
+            Continuous 50-year evolution of <strong>Swedish municipal waste (1975–2025)</strong> across <strong>6 treatment pathways</strong> in metric tonnes (Source: <cite>Avfall Sverige</cite>).
+          </p>
         </header>
 
-        <div class="sankey-controls">
+        <div class="streamgraph-controls">
           <fieldset class="control-group">
-            <legend class="control-legend">Temporal Grouping</legend>
+            <legend class="control-legend">Baseline Mode</legend>
             <div class="segmented-control">
               <label class="segmented-option">
-                <input type="radio" name="sankey-grouping" value="lustros" checked>
-                <span>5-Year Periods (Annual Avg)</span>
+                <input type="radio" name="stream-mode" value="stream" checked>
+                <span>Streamgraph</span>
               </label>
               <label class="segmented-option">
-                <input type="radio" name="sankey-grouping" value="milestones">
-                <span>Milestones (Every 5 Yrs)</span>
+                <input type="radio" name="stream-mode" value="share">
+                <span>100% Share</span>
               </label>
               <label class="segmented-option">
-                <input type="radio" name="sankey-grouping" value="all">
-                <span>All Years (36 Records)</span>
+                <input type="radio" name="stream-mode" value="area">
+                <span>Stacked Area</span>
               </label>
             </div>
           </fieldset>
         </div>
 
         <figure class="viz-figure">
-          <div
-            id="sankey-plot"
-            class="chart-canvas chart-canvas--sankey"
-            role="img"
-            aria-label="2-stage Sankey diagram showing Swedish municipal waste flows from milestone years 2025 down to 1975 into 6 treatment pathways"
-            aria-describedby="sankey-caption"
-          ></div>
-          <figcaption id="sankey-caption" class="viz-caption">
-            Ten 5-year periods (1975–2025) ordered chronologically from newest (2020–2025, top) to oldest (1975–1979, bottom) showing average annual metric tonnes.
+          <div id="streamgraph-plot" class="streamgraph-canvas"></div>
+          <figcaption id="streamgraph-caption" class="viz-caption">
+            Symmetric streamgraph of Swedish municipal waste (1975–2025) in metric tonnes. Band thickness reflects annual volume; Landfill collapses from 62.3% (1975) to 1.5% (2025) as Energy Recovery, Material Recycling, and Biological Treatment expand.
           </figcaption>
         </figure>
+
+        <p id="streamgraph-status" class="visually-hidden" aria-live="polite"></p>
 
         <div class="beeswarm-disclosures">
           <details class="notion-toggle">
@@ -417,18 +443,18 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">Accessible Data Table (Treatment Volumes in Tonnes)</span>
+              <span class="section-heading">Accessible Data Table (36 Annual Records, 1975–2025)</span>
             </summary>
 
             <div class="notion-toggle-content">
               <div class="table-scroll-container" role="region" aria-labelledby="waste-table-caption" tabindex="0">
                 <table class="data-table">
                   <caption id="waste-table-caption">
-                    Swedish municipal waste average annual treatment volumes in tonnes per 5-year period (1975–2025) (Source: Avfall Sverige).
+                    Swedish municipal waste annual treatment volumes in metric tonnes (1975–2025) (Source: Avfall Sverige).
                   </caption>
                   <thead>
                     <tr>
-                      <th id="waste-table-th-year" scope="col">5-Year Period</th>
+                      <th scope="col">Year</th>
                       <th scope="col">Material Recycling</th>
                       <th scope="col">Biological Treatment</th>
                       <th scope="col">Energy Recovery</th>
@@ -438,7 +464,7 @@
                       <th scope="col">Total (t)</th>
                     </tr>
                   </thead>
-                  <tbody id="sankey-table-body"></tbody>
+                  <tbody id="streamgraph-table-body"></tbody>
                 </table>
               </div>
             </div>
@@ -449,7 +475,7 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">About This Sankey Diagram &amp; Methodology</span>
+              <span class="section-heading">About This Streamgraph &amp; Methodology</span>
             </summary>
 
             <div class="notion-toggle-content">
@@ -459,13 +485,13 @@
 
               <div class="editorial-notes">
                 <p>
-                  <strong>5-Year Lustro Periods:</strong> Data is aggregated into 10 five-year lustro periods (2020–2025 down to 1975–1979) showing annual average tonnes treated. This eliminates visual spaghetti while preserving long-term transition trends.
+                  <strong>Why a Streamgraph?</strong> Unlike discrete year-to-category diagrams, a continuous streamgraph preserves the chronological time axis (1975–2025) and lets readers visually trace how each treatment pathway expands or contracts over five decades.
                 </p>
                 <p>
-                  <strong>Treatment Pathways:</strong> Ribbon widths reflect metric tonnes handled across Energy Recovery, Material Recycling, Biological Treatment, Landfill, Construction Material Recycling, and Prepared for Reuse.
+                  <strong>Monotone Cubic Curves &amp; Colorblind-Safe Palette:</strong> Band edges are interpolated using Fritsch-Carlson monotone cubic splines (preventing artificial overshoots) and colored with an Okabe-Ito-harmonized palette. Hover any band or legend item to isolate a single pathway.
                 </p>
                 <p>
-                  <strong>Multi-Mode Comparison:</strong> Use the control above to switch between 5-Year Periods (Annual Avg), Milestones (Every 5 Yrs), or raw yearly records.
+                  <strong>Three Baselines:</strong> Switch between the centered <strong>Streamgraph</strong> (default), <strong>100% Share</strong> to compare relative composition, or <strong>Stacked Area</strong> to read exact total tonnage from a flat zero baseline.
                 </p>
               </div>
 
@@ -611,6 +637,112 @@
                   <li>
                     <a href="https://ozonewatch.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">
                       NASA Ozone Watch — Goddard Space Flight Center (GSFC), 1979–2025
+                    </a>
+                  </li>
+                </ul>
+              </footer>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section id="waffle" class="chart-section waffle-section" tabindex="-1">
+        <header class="section-header">
+          <h2 id="waffle-title" class="page-title">WAFFLE CHART</h2>
+          <p class="section-question">
+            What share of the world’s 996 largest cities cross extreme climate hazard thresholds as warming rises?
+          </p>
+          <p class="page-subtitle">
+            Three 10 × 10 grids comparing <strong>+1.5°C, +2.0°C, and +3.0°C</strong> global warming across <strong>996 cities (&gt;500k residents, ~2.1B people)</strong>. Each square equals <strong>1% of major cities</strong> (Source: <cite>World Resources Institute, 2024</cite>).
+          </p>
+        </header>
+
+        <div class="waffle-controls">
+          <div class="control-group">
+            <label for="waffle-hazard-select" class="control-legend">Climate Hazard</label>
+            <select id="waffle-hazard-select" class="ozone-select"></select>
+          </div>
+          <p id="waffle-threshold-note" class="waffle-threshold-note">
+            Extreme threshold: ≥ 60 days/yr above local 95th percentile
+          </p>
+        </div>
+
+        <figure class="viz-figure">
+          <div id="waffle-plot" class="waffle-canvas"></div>
+          <figcaption id="waffle-caption" class="viz-caption">
+            Extreme Heat Days (≥ 60 days/yr above local 95th percentile): rises from 6.0% of major cities at +1.5°C (60 cities) to 14.9% at +2.0°C (148 cities) and 45.4% at +3.0°C (452 cities).
+          </figcaption>
+        </figure>
+
+        <p id="waffle-status" class="visually-hidden" aria-live="polite"></p>
+
+        <div class="beeswarm-disclosures">
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span class="section-heading">Accessible Data Table (12 City Climate Hazards, 996 Cities)</span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <div class="table-scroll-container" role="region" aria-labelledby="waffle-table-caption" tabindex="0">
+                <table class="data-table">
+                  <caption id="waffle-table-caption">
+                    Percentage and count of the world’s 996 largest cities (&gt;500k inhabitants) whose expected annual hazard value exceeds WRI extreme thresholds under +1.5°C, +2.0°C, and +3.0°C global warming (Source: Wong &amp; Mackres, 2024, WRI).
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Climate Hazard</th>
+                      <th scope="col">Extreme Threshold</th>
+                      <th scope="col">+1.5°C</th>
+                      <th scope="col">+2.0°C</th>
+                      <th scope="col">+3.0°C</th>
+                      <th scope="col">+1.5°C → +3.0°C</th>
+                    </tr>
+                  </thead>
+                  <tbody id="waffle-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span class="section-heading">About This Waffle Chart &amp; Methodology</span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <p class="section-lead">
+                <strong>Why a 3-Panel 10 × 10 Waffle Chart?</strong> Turning percentages into discrete 1% units makes the jump from the +1.5°C Paris Agreement target to +2.0°C and +3.0°C tangible at a single glance—no axis estimation required.
+              </p>
+
+              <div class="editorial-notes">
+                <p>
+                  <strong>996 Major Cities (~2.1 Billion Residents):</strong> Encompasses every urban center worldwide with over 500,000 inhabitants in the Global Human Settlement Layer (GHSL) Urban Centre Database, representing 56% of the global urban population tracked in GHSL.
+                </p>
+                <p>
+                  <strong>Best-Fit Downscaled Climate Models:</strong> Following WRI’s Technical Note methodology, values use each city’s top-ranked NEX-GDDP-CMIP6 model (<code>model_rank = 1</code>, calibrated against ERA5 reanalysis) across 10-year windows centered on +1.5°C, +2.0°C, and +3.0°C above preindustrial (1880–1900) temperatures.
+                </p>
+                <p>
+                  <strong>Colorblind-Safe Progression:</strong> Filled squares step through amber (<code>#E69F00</code>), vermillion (<code>#D55E00</code>), and deep crimson (<code>#9E2A2B</code>) with distinct luminance levels, ensuring clear visual separation for all color vision types.
+                </p>
+              </div>
+
+              <footer class="sources-footer">
+                <strong>Data Source:</strong>
+                <ul class="sources-list">
+                  <li>
+                    <a href="https://datasets.wri.org/dataset/city-scale-climate-hazard-indicators-warming-scenarios" target="_blank" rel="noopener noreferrer">
+                      World Resources Institute (WRI) — City-Scale Climate Hazard Indicators (Wong &amp; Mackres, 2024)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://doi.org/10.46830/writn.23.00154" target="_blank" rel="noopener noreferrer">
+                      WRI Technical Note (DOI: 10.46830/writn.23.00154)
                     </a>
                   </li>
                 </ul>
