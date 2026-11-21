@@ -1,48 +1,31 @@
 /**
  * Beeswarm Plot Module:
- * Loads WHO Healthy Life Expectancy (HALE) data from ./data/hale.json
- * (with automatic file:// fallback), computes collision-free beeswarm offsets
- * per WHO region, and renders an interactive Plotly beeswarm chart with
- * metric/sex toggles, multi-country spotlight search, and an accessible data table.
+ * Loads WHO Global Health Observatory Healthy Life Expectancy (HALE at birth, WHOSIS_000002)
+ * data (2000–2023) from ./data/hale.json (with automatic file:// fallback),
+ * computes collision-free beeswarm offsets per WHO region, and renders an
+ * interactive Plotly beeswarm chart with metric, year (2000–2023), and sex
+ * toggles, multi-country spotlight search, and an accessible data table.
  */
 
 (() => {
-  const BEESWARM_DEFAULT_OPACITY = 0.82;
+  const BEESWARM_DEFAULT_OPACITY = 0.85;
   const BEESWARM_DIMMED_OPACITY = 0.14;
   const BEESWARM_HIGHLIGHT_OPACITY = 1.0;
 
-  /** Colorblind-safe editorial palette mapped to the 6 official WHO regions */
+  /** Okabe-Ito colorblind-safe palette mapped to the 6 official WHO regions */
   const REGION_COLORS = {
-    Europe: "#3b5bdb",
-    "Western Pacific": "#0ca678",
-    Americas: "#e8590c",
-    "Eastern Mediterranean": "#862e9c",
-    "South-East Asia": "#d6336c",
-    Africa: "#0b7285",
+    "Western Pacific": "#0072B2",
+    Europe: "#009E73",
+    Americas: "#E69F00",
+    "South-East Asia": "#CC79A7",
+    "Eastern Mediterranean": "#56B4E9",
+    Africa: "#D55E00",
   };
 
-  const METRIC_CONFIG = {
-    "2016": {
-      label: "Healthy Life Expectancy (2016)",
-      axisTitle: "Healthy Life Expectancy at Birth in 2016 (Years)",
-      unit: " yrs",
-      suffix: " years",
-      isPercent: false,
-    },
-    "2000": {
-      label: "Healthy Life Expectancy (2000)",
-      axisTitle: "Healthy Life Expectancy at Birth in 2000 (Years)",
-      unit: " yrs",
-      suffix: " years",
-      isPercent: false,
-    },
-    pct: {
-      label: "HALE % Change (2000–2016)",
-      axisTitle: "Percentage Change in Healthy Life Expectancy, 2000–2016 (%)",
-      unit: "%",
-      suffix: "%",
-      isPercent: true,
-    },
+  const SEX_LABELS = {
+    total: "Both Sexes",
+    female: "Female",
+    male: "Male",
   };
 
   function normalizeText(str) {
@@ -82,13 +65,16 @@
     }
   }
 
-  /** Return numeric value for a given record, sex ("female"|"male"), and metric ("2016"|"2000"|"pct") */
-  function getMetricValue(record, sex, metric) {
-    return record[`${sex}_${metric}`];
+  /** Return numeric value for a record given sex ("total"|"female"|"male"), mode ("year"|"pct"), and yearIndex */
+  function getMetricValue(record, sex, mode, yearIndex) {
+    if (mode === "pct") {
+      return record[`${sex}_pct`];
+    }
+    return record[sex][yearIndex];
   }
 
-  function formatMetricValue(value, metric) {
-    if (metric === "pct") {
+  function formatMetricValue(value, mode) {
+    if (mode === "pct") {
       const sign = value > 0 ? "+" : "";
       return `${sign}${value.toFixed(1)}%`;
     }
@@ -247,6 +233,7 @@
   function renderAccessibleTable(tbodyEl, dataset) {
     if (!tbodyEl) return;
     const fragment = document.createDocumentFragment();
+    const lastIdx = dataset.years.length - 1;
 
     for (const row of dataset.countries) {
       const tr = document.createElement("tr");
@@ -258,12 +245,11 @@
 
       const cells = [
         row.region,
-        row.female_2000.toFixed(1),
-        row.female_2016.toFixed(1),
-        `${row.female_pct > 0 ? "+" : ""}${row.female_pct.toFixed(2)}%`,
-        row.male_2000.toFixed(1),
-        row.male_2016.toFixed(1),
-        `${row.male_pct > 0 ? "+" : ""}${row.male_pct.toFixed(2)}%`,
+        row.total[0].toFixed(1),
+        row.total[lastIdx].toFixed(1),
+        `${row.total_pct > 0 ? "+" : ""}${row.total_pct.toFixed(1)}%`,
+        row.female[lastIdx].toFixed(1),
+        row.male[lastIdx].toFixed(1),
       ];
 
       for (const text of cells) {
@@ -278,12 +264,29 @@
     tbodyEl.replaceChildren(fragment);
   }
 
+  /** Populate Year <select> from latest (2021) down to earliest (2000) */
+  function populateYearSelect(yearSelectEl, years) {
+    if (!yearSelectEl) return;
+    const frag = document.createDocumentFragment();
+    const descYears = [...years].reverse();
+    for (const y of descYears) {
+      const opt = document.createElement("option");
+      opt.value = String(y);
+      opt.textContent = y === descYears[0] ? `${y} (Latest)` : String(y);
+      frag.appendChild(opt);
+    }
+    yearSelectEl.replaceChildren(frag);
+    yearSelectEl.value = String(descYears[0]);
+  }
+
   async function initBeeswarm() {
     const plotEl = document.getElementById("beeswarm-plot");
     if (!plotEl) return;
 
     const metricInputs = document.querySelectorAll('input[name="hale-metric"]');
     const sexInputs = document.querySelectorAll('input[name="hale-sex"]');
+    const yearWrapEl = document.getElementById("beeswarm-year-group");
+    const yearSelectEl = document.getElementById("beeswarm-year");
     const searchForm = document.getElementById("beeswarm-filter-form");
     const searchInput = document.getElementById("beeswarm-search");
     const datalistEl = document.getElementById("beeswarm-country-list");
@@ -293,25 +296,49 @@
     const tableBodyEl = document.getElementById("beeswarm-table-body");
 
     const dataset = await loadHaleData();
-    const { countries, regions_order: regionsOrder, region_benchmarks: regionBenchmarks, global_benchmark: globalBenchmark } = dataset;
+    const {
+      years,
+      countries,
+      regions_order: regionsOrder,
+      region_benchmarks: regionBenchmarks,
+      global_benchmark: globalBenchmark,
+    } = dataset;
 
+    const firstYear = years[0];
+    const lastYear = years[years.length - 1];
+
+    populateYearSelect(yearSelectEl, years);
     renderAccessibleTable(tableBodyEl, dataset);
     updateDatalistSuggestions(datalistEl, countries, "");
 
     const state = {
-      metric: "2016",
-      sex: "female",
+      mode: "year", // "year" | "pct"
+      year: lastYear,
+      sex: "total", // "total" | "female" | "male"
       query: "",
     };
 
     /** Build and render Plotly beeswarm figure for current state & container width */
     function renderChart() {
-      const { metric, sex, query } = state;
-      const cfg = METRIC_CONFIG[metric];
-      const sexLabel = sex === "female" ? "Female" : "Male";
+      const { mode, year, sex, query } = state;
+      const yearIndex = Math.max(0, years.indexOf(year));
+      const sexLabel = SEX_LABELS[sex] || "Both Sexes";
+      const isPercent = mode === "pct";
+
+      if (yearWrapEl) {
+        yearWrapEl.hidden = isPercent;
+      }
+
+      const metricLabel = isPercent
+        ? `HALE % Change (${firstYear}–${lastYear})`
+        : `Healthy Life Expectancy (${year})`;
+
+      const axisTitle = isPercent
+        ? `Percentage Change in Healthy Life Expectancy, ${firstYear}–${lastYear} (%)`
+        : `Healthy Life Expectancy at Birth in ${year} (Years)`;
 
       // Compute global X range with comfortable padding
-      const allVals = countries.map((d) => getMetricValue(d, sex, metric));
+      const allVals = countries.map((d) => getMetricValue(d, sex, mode, yearIndex));
       const rawMin = Math.min(...allVals);
       const rawMax = Math.max(...allVals);
       const span = Math.max(rawMax - rawMin, 1);
@@ -320,16 +347,16 @@
 
       // Measure container for pixel-accurate beeswarm circle packing
       const isCompact = plotEl.clientWidth < 680;
-      const marginLeft = isCompact ? 155 : 230;
-      const marginRight = isCompact ? 20 : 40;
-      const marginTop = 44;
-      const marginBottom = 76;
-      const totalHeight = isCompact ? 640 : 680;
+      const marginLeft = isCompact ? 145 : 195;
+      const marginRight = isCompact ? 20 : 36;
+      const marginTop = 36;
+      const marginBottom = 64;
+      const totalHeight = isCompact ? 590 : 630;
       const innerWidth = Math.max(plotEl.clientWidth - marginLeft - marginRight, 260);
       const innerHeight = totalHeight - marginTop - marginBottom;
       const laneCount = regionsOrder.length;
       const laneHeightPx = innerHeight / (laneCount + 0.3);
-      const dotDiameter = isCompact ? 7.5 : 9.5;
+      const dotDiameter = isCompact ? 7.5 : 9.0;
 
       const hasQuery = query.split(",").some((t) => t.trim().length > 0);
       const matchedNames = hasQuery ? findMatchedCountryNames(countries, query) : new Set();
@@ -337,10 +364,11 @@
       const traces = [];
       const calloutAnnotations = [];
 
-      // Plot regions top-to-bottom (Europe at top -> y = 5, Africa at bottom -> y = 0)
+      // Plot regions top-to-bottom (highest regional HALE at top -> Africa at bottom)
       const yTickVals = [];
       const yTickText = [];
       const laneShapes = [];
+      const lastIdx = years.length - 1;
 
       regionsOrder.forEach((regionName, idx) => {
         const yCenter = laneCount - 1 - idx;
@@ -348,7 +376,9 @@
         const color = REGION_COLORS[regionName] || "#475569";
 
         yTickVals.push(yCenter);
-        yTickText.push(`<b>${regionName}</b><br><span style="color:#64748b;font-size:14px">n = ${regionCountries.length}</span>`);
+        yTickText.push(
+          `<b>${regionName}</b><br><span style="color:#94a3b8;font-size:12px">${regionCountries.length} countries</span>`
+        );
 
         // Subtle horizontal lane baseline
         laneShapes.push({
@@ -359,13 +389,13 @@
           yref: "y",
           y0: yCenter,
           y1: yCenter,
-          line: { color: "rgba(148, 163, 184, 0.35)", width: 1 },
+          line: { color: "rgba(203, 213, 225, 0.45)", width: 1 },
           layer: "below",
         });
 
         const packed = computeLaneBeeswarm(
           regionCountries,
-          (d) => getMetricValue(d, sex, metric),
+          (d) => getMetricValue(d, sex, mode, yearIndex),
           xMin,
           xMax,
           innerWidth,
@@ -388,28 +418,28 @@
           } else if (isMatched) {
             opacities.push(BEESWARM_HIGHLIGHT_OPACITY);
             lineColors.push("#0f172a");
-            lineWidths.push(2.4);
+            lineWidths.push(2.2);
             sizes.push(dotDiameter + 2.5);
 
             if (matchedNames.size <= 15) {
               calloutAnnotations.push({
                 x,
                 y: yCenter + yOffset,
-                text: `<b>${item.country}</b> (${formatMetricValue(x, metric)})`,
+                text: `<b>${item.country}</b> (${formatMetricValue(x, mode)})`,
                 showarrow: true,
                 arrowhead: 2,
-                arrowsize: 0.9,
-                arrowwidth: 1.4,
+                arrowsize: 0.8,
+                arrowwidth: 1.2,
                 arrowcolor: "#0f172a",
                 ax: 0,
-                ay: -28,
+                ay: -24,
                 bgcolor: "rgba(255, 255, 255, 0.95)",
-                bordercolor: "#0f172a",
-                borderwidth: 1.1,
-                borderpad: 4,
+                bordercolor: "#334155",
+                borderwidth: 1,
+                borderpad: 3,
                 font: {
                   family: '"National 2", "National", "Plus Jakarta Sans", sans-serif',
-                  size: 15,
+                  size: 13,
                   color: "#0f172a",
                 },
               });
@@ -422,6 +452,9 @@
           }
         });
 
+        const displayIdx = isPercent ? lastIdx : yearIndex;
+        const displayYear = years[displayIdx];
+
         traces.push({
           type: "scatter",
           mode: "markers",
@@ -431,20 +464,13 @@
           customdata: packed.map(({ item }) => [
             item.country,
             item.region,
-            formatMetricValue(getMetricValue(item, sex, metric), metric),
-            item.female_2016.toFixed(1),
-            item.female_2000.toFixed(1),
-            `${item.female_pct > 0 ? "+" : ""}${item.female_pct.toFixed(2)}%`,
-            item.male_2016.toFixed(1),
-            item.male_2000.toFixed(1),
-            `${item.male_pct > 0 ? "+" : ""}${item.male_pct.toFixed(2)}%`,
+            formatMetricValue(getMetricValue(item, sex, mode, yearIndex), mode),
+            item.total[displayIdx].toFixed(1),
+            item.female[displayIdx].toFixed(1),
+            item.male[displayIdx].toFixed(1),
+            `${item[sex][0].toFixed(1)} → ${item[sex][lastIdx].toFixed(1)} yrs (${item[`${sex}_pct`] > 0 ? "+" : ""}${item[`${sex}_pct`].toFixed(1)}%)`,
           ]),
-          hovertemplate:
-            "<b>%{customdata[0]}</b> · %{customdata[1]}<br>" +
-            `<b>${sexLabel} ${cfg.label}:</b> %{customdata[2]}<br>` +
-            "Female: %{customdata[3]} yrs (2016) · %{customdata[4]} yrs (2000) · %{customdata[5]}<br>" +
-            "Male: %{customdata[6]} yrs (2016) · %{customdata[7]} yrs (2000) · %{customdata[8]}" +
-            "<extra></extra>",
+          hovertemplate: "<b>%{customdata[0]}</b><br>%{customdata[2]}<extra></extra>",
           marker: {
             color,
             size: sizes,
@@ -465,10 +491,10 @@
       regionsOrder.forEach((regionName, idx) => {
         const bench = regionBenchmarks[regionName];
         if (!bench) return;
-        const val = getMetricValue(bench, sex, metric);
+        const val = getMetricValue(bench, sex, mode, yearIndex);
         benchX.push(val);
         benchY.push(laneCount - 1 - idx);
-        benchCustom.push([regionName, formatMetricValue(val, metric)]);
+        benchCustom.push([regionName, formatMetricValue(val, mode)]);
       });
 
       traces.push({
@@ -478,21 +504,19 @@
         x: benchX,
         y: benchY,
         customdata: benchCustom,
-        hovertemplate:
-          "<b>%{customdata[0]} — Official WHO Regional Average</b><br>" +
-          `${sexLabel} ${cfg.label}: %{customdata[1]}<extra></extra>`,
+        hovertemplate: "<b>%{customdata[0]} (Avg)</b><br>%{customdata[1]}<extra></extra>",
         marker: {
           symbol: "diamond",
-          size: 10.5,
-          color: "#0f172a",
-          opacity: hasQuery ? 0.35 : 0.92,
-          line: { color: "#ffffff", width: 1.8 },
+          size: 8.5,
+          color: "#334155",
+          opacity: hasQuery ? 0.3 : 0.88,
+          line: { color: "#ffffff", width: 1.4 },
         },
         showlegend: false,
       });
 
-      // Vertical dashed reference line for (WHO) Global average
-      const globalVal = globalBenchmark ? getMetricValue(globalBenchmark, sex, metric) : null;
+      // Vertical dashed reference line for WHO Global average
+      const globalVal = globalBenchmark ? getMetricValue(globalBenchmark, sex, mode, yearIndex) : null;
       const annotations = [...calloutAnnotations];
 
       if (globalVal !== null) {
@@ -504,33 +528,29 @@
           yref: "paper",
           y0: 0,
           y1: 1,
-          line: { color: "#334155", width: 1.5, dash: "dot" },
-          layer: "above",
+          line: { color: "rgba(100, 116, 139, 0.55)", width: 1.2, dash: "dot" },
+          layer: "below",
         });
 
         annotations.push({
           x: globalVal,
-          y: 1.045,
+          y: 1.035,
           xref: "x",
           yref: "paper",
-          text: `<b>WHO Global avg: ${formatMetricValue(globalVal, metric)}</b>`,
+          text: `Global Avg: <b>${formatMetricValue(globalVal, mode)}</b>`,
           showarrow: false,
           xanchor: "center",
           yanchor: "bottom",
-          bgcolor: "rgba(244, 246, 248, 0.92)",
-          bordercolor: "#cbd5e1",
-          borderwidth: 1,
-          borderpad: 5,
           font: {
             family: '"National 2", "National", "Plus Jakarta Sans", sans-serif',
-            size: 14.5,
-            color: "#0f172a",
+            size: 13,
+            color: "#64748b",
           },
         });
       }
 
-      // Zero line when showing percentage change (highlights negative outliers like Syria)
-      if (cfg.isPercent) {
+      // Zero line when showing percentage change (highlights negative changes)
+      if (isPercent) {
         laneShapes.push({
           type: "line",
           xref: "x",
@@ -539,7 +559,7 @@
           yref: "paper",
           y0: 0,
           y1: 1,
-          line: { color: "rgba(220, 38, 38, 0.45)", width: 1.4, dash: "solid" },
+          line: { color: "rgba(220, 38, 38, 0.35)", width: 1.2, dash: "solid" },
           layer: "below",
         });
       }
@@ -548,21 +568,21 @@
         height: totalHeight,
         xaxis: {
           title: {
-            text: `${cfg.axisTitle} — ${sexLabel}`,
-            standoff: 18,
-            font: { size: 20 },
+            text: `${axisTitle} — ${sexLabel}`,
+            standoff: 16,
+            font: { size: 14 },
           },
-          tickfont: { size: 16 },
+          tickfont: { size: 13 },
           range: [xMin, xMax],
-          ticksuffix: cfg.isPercent ? "%" : "",
+          ticksuffix: isPercent ? "%" : "",
           zeroline: false,
-          gridcolor: "rgba(148, 163, 184, 0.22)",
+          gridcolor: "rgba(148, 163, 184, 0.16)",
         },
         yaxis: {
           tickmode: "array",
           tickvals: yTickVals,
           ticktext: yTickText,
-          tickfont: { size: 16 },
+          tickfont: { size: 13 },
           range: [-0.62, laneCount - 0.38],
           showgrid: false,
           zeroline: false,
@@ -572,13 +592,16 @@
         annotations,
         font: {
           family: '"National 2", "National", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif',
-          size: 17,
+          size: 14,
           color: "#0f172a",
         },
         hoverlabel: {
+          bgcolor: "#ffffff",
+          bordercolor: "#cbd5e1",
           font: {
             family: '"National 2", "National", "Plus Jakarta Sans", sans-serif',
-            size: 15,
+            size: 13.5,
+            color: "#0f172a",
           },
         },
         hovermode: "closest",
@@ -595,14 +618,14 @@
 
       // Update accessible aria-label, figcaption, and polite live region
       const globalSummary =
-        globalVal !== null ? ` WHO Global average is ${formatMetricValue(globalVal, metric)}.` : "";
+        globalVal !== null ? ` WHO Global average is ${formatMetricValue(globalVal, mode)}.` : "";
       plotEl.setAttribute(
         "aria-label",
-        `Beeswarm plot of ${sexLabel} ${cfg.label} for ${countries.length} countries grouped into 6 WHO regions.${globalSummary}`
+        `Beeswarm plot of ${sexLabel} ${metricLabel} for ${countries.length} countries and territories grouped into 6 WHO regions.${globalSummary}`
       );
 
       if (captionEl) {
-        captionEl.textContent = `Showing ${sexLabel.toLowerCase()} ${cfg.label.toLowerCase()} across ${countries.length} WHO member states grouped by official WHO region. Black diamonds mark each official WHO regional average; the dotted line marks the WHO Global average (${globalVal !== null ? formatMetricValue(globalVal, metric) : "N/A"}).`;
+        captionEl.textContent = `Showing ${sexLabel.toLowerCase()} ${metricLabel.toLowerCase()} across ${countries.length} countries and territories grouped by official WHO region. Diamonds mark official WHO regional averages; the dotted line marks the WHO Global average (${globalVal !== null ? formatMetricValue(globalVal, mode) : "N/A"}).`;
       }
 
       if (statusEl) {
@@ -610,9 +633,9 @@
           statusEl.textContent =
             matchedNames.size === 0
               ? `No matching countries found for "${query}".`
-              : `Highlighting ${matchedNames.size} ${matchedNames.size === 1 ? "country" : "countries"} for ${sexLabel} ${cfg.label}.`;
+              : `Highlighting ${matchedNames.size} ${matchedNames.size === 1 ? "country" : "countries"} for ${sexLabel} ${metricLabel}.`;
         } else {
-          statusEl.textContent = `Showing ${sexLabel} ${cfg.label} across all ${countries.length} countries.`;
+          statusEl.textContent = `Showing ${sexLabel} ${metricLabel} across all ${countries.length} countries and territories.`;
         }
       }
     }
@@ -620,15 +643,22 @@
     // Initial render
     renderChart();
 
-    // Controls: metric & sex radios
+    // Controls: metric, year, & sex
     metricInputs.forEach((input) => {
       input.addEventListener("change", (e) => {
         if (e.target.checked) {
-          state.metric = e.target.value;
+          state.mode = e.target.value;
           renderChart();
         }
       });
     });
+
+    if (yearSelectEl) {
+      yearSelectEl.addEventListener("change", (e) => {
+        state.year = Number(e.target.value);
+        renderChart();
+      });
+    }
 
     sexInputs.forEach((input) => {
       input.addEventListener("change", (e) => {

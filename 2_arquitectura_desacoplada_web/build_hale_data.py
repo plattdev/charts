@@ -1,24 +1,27 @@
-"""Cleans the WHO Healthy Life Expectancy (HALE) CSV (2000-2016) and exports
-data/hale.json and data/hale_fallback.js grouped by official WHO regions."""
+"""Cleans the WHO Data.who.int Healthy Life Expectancy (HALE at birth) CSV
+(C64284D_ALL_LATEST.csv, 2000-2021) and exports data/hale.json and
+data/hale_fallback.js grouped by official WHO regions."""
 
 import csv
 import json
+from collections import defaultdict
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-CSV_PATH = DATA_DIR / "HALE" / "hale_who_2000_2016.csv"
+CSV_PATH = DATA_DIR / "HALE" / "C64284D_ALL_LATEST.csv"
 
+# Ordered highest-to-lowest by 2021 WHO regional HALE (Both Sexes)
 WHO_REGION_NAMES = (
-    "Europe",
     "Western Pacific",
+    "Europe",
     "Americas",
-    "Eastern Mediterranean",
     "South-East Asia",
+    "Eastern Mediterranean",
     "Africa",
 )
 
-# Official WHO regional classification for all 183 member states in the dataset
+# Official WHO regional classification for all 185 countries & territories in C64284D_ALL_LATEST.csv
 COUNTRY_TO_WHO_REGION: dict[str, str] = {
     # Africa (47)
     "Algeria": "Africa",
@@ -57,7 +60,7 @@ COUNTRY_TO_WHO_REGION: dict[str, str] = {
     "Niger": "Africa",
     "Nigeria": "Africa",
     "Rwanda": "Africa",
-    "Sao Tome & Principe": "Africa",
+    "Sao Tome and Principe": "Africa",
     "Senegal": "Africa",
     "Seychelles": "Africa",
     "Sierra Leone": "Africa",
@@ -68,8 +71,8 @@ COUNTRY_TO_WHO_REGION: dict[str, str] = {
     "United Republic of Tanzania": "Africa",
     "Zambia": "Africa",
     "Zimbabwe": "Africa",
-    # Americas (33)
-    "Antigua & Barbuda": "Americas",
+    # Americas (34, including Puerto Rico)
+    "Antigua and Barbuda": "Americas",
     "Argentina": "Americas",
     "Bahamas": "Americas",
     "Barbados": "Americas",
@@ -95,14 +98,15 @@ COUNTRY_TO_WHO_REGION: dict[str, str] = {
     "Panama": "Americas",
     "Paraguay": "Americas",
     "Peru": "Americas",
+    "Puerto Rico": "Americas",
     "Saint Lucia": "Americas",
-    "Saint Vincent & the Grenadines": "Americas",
+    "Saint Vincent and the Grenadines": "Americas",
     "Suriname": "Americas",
-    "Trinidad & Tobago": "Americas",
+    "Trinidad and Tobago": "Americas",
     "United States of America": "Americas",
     "Uruguay": "Americas",
     "Venezuela (Bolivarian Republic of)": "Americas",
-    # Eastern Mediterranean (21)
+    # Eastern Mediterranean (22, including occupied Palestinian territory)
     "Afghanistan": "Eastern Mediterranean",
     "Bahrain": "Eastern Mediterranean",
     "Djibouti": "Eastern Mediterranean",
@@ -114,6 +118,7 @@ COUNTRY_TO_WHO_REGION: dict[str, str] = {
     "Lebanon": "Eastern Mediterranean",
     "Libya": "Eastern Mediterranean",
     "Morocco": "Eastern Mediterranean",
+    "occupied Palestinian territory, including east Jerusalem": "Eastern Mediterranean",
     "Oman": "Eastern Mediterranean",
     "Pakistan": "Eastern Mediterranean",
     "Qatar": "Eastern Mediterranean",
@@ -131,7 +136,7 @@ COUNTRY_TO_WHO_REGION: dict[str, str] = {
     "Azerbaijan": "Europe",
     "Belarus": "Europe",
     "Belgium": "Europe",
-    "Bosnia & Herzegovina": "Europe",
+    "Bosnia and Herzegovina": "Europe",
     "Bulgaria": "Europe",
     "Croatia": "Europe",
     "Cyprus": "Europe",
@@ -155,7 +160,8 @@ COUNTRY_TO_WHO_REGION: dict[str, str] = {
     "Luxembourg": "Europe",
     "Malta": "Europe",
     "Montenegro": "Europe",
-    "Netherlands": "Europe",
+    "Netherlands (Kingdom of the)": "Europe",
+    "North Macedonia": "Europe",
     "Norway": "Europe",
     "Poland": "Europe",
     "Portugal": "Europe",
@@ -169,11 +175,10 @@ COUNTRY_TO_WHO_REGION: dict[str, str] = {
     "Sweden": "Europe",
     "Switzerland": "Europe",
     "Tajikistan": "Europe",
-    "The former Yugoslav republic of Macedonia": "Europe",
-    "Turkey": "Europe",
+    "Türkiye": "Europe",
     "Turkmenistan": "Europe",
     "Ukraine": "Europe",
-    "United Kingdom of Great Britain & Northern Ireland": "Europe",
+    "United Kingdom of Great Britain and Northern Ireland": "Europe",
     "Uzbekistan": "Europe",
     # South-East Asia (11)
     "Bangladesh": "South-East Asia",
@@ -211,69 +216,100 @@ COUNTRY_TO_WHO_REGION: dict[str, str] = {
     "Viet Nam": "Western Pacific",
 }
 
+ENTITY_GEO_TYPES = {
+    "COUNTRY",
+    "NATIONAL LIBERATION MOVEMENT",
+    "ORGANIZED, UNINCORPORATED TERRITORY",
+}
 
-def parse_pct(raw: str) -> float:
-    return round(float(raw.strip().rstrip("%")), 2)
+SEX_MAP = {
+    "TOTAL": "total",
+    "FEMALE": "female",
+    "MALE": "male",
+}
 
 
-def parse_num(raw: str) -> float:
-    return round(float(raw.strip()), 2)
+def compute_series_block(series_by_sex: dict[str, dict[int, float]], years: list[int]) -> dict:
+    """Build ordered yearly value arrays and 2000->latest % change per sex."""
+    block: dict = {}
+    first_year = years[0]
+    last_year = years[-1]
+
+    for sex_key in ("total", "female", "male"):
+        ymap = series_by_sex[sex_key]
+        vals = [round(ymap[y], 2) for y in years]
+        v_start = ymap[first_year]
+        v_end = ymap[last_year]
+        pct = round(((v_end - v_start) / v_start) * 100.0, 2) if v_start else 0.0
+        block[sex_key] = vals
+        block[f"{sex_key}_pct"] = pct
+
+    return block
 
 
 def build_hale_dataset() -> dict:
-    countries: list[dict] = []
-    region_benchmarks: dict[str, dict] = {}
-    global_benchmark: dict | None = None
-    unmapped: list[str] = []
+    years_set: set[int] = set()
+    global_raw: dict[str, dict[int, float]] = defaultdict(dict)
+    region_raw: dict[str, dict[str, dict[int, float]]] = defaultdict(lambda: defaultdict(dict))
+    country_raw: dict[str, dict[str, dict[int, float]]] = defaultdict(lambda: defaultdict(dict))
+    unmapped: set[str] = set()
 
-    with CSV_PATH.open(encoding="utf-8", newline="") as f:
-        rows = list(csv.reader(f))[3:]
+    with CSV_PATH.open(encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            geo_type = row["DIM_GEO_CODE_TYPE"].strip()
+            geo_name = row["GEO_NAME_SHORT"].strip()
+            sex_code = row["DIM_SEX"].strip()
+            if sex_code not in SEX_MAP:
+                continue
 
-    for row in rows:
-        if not row or not row[0].strip():
-            continue
-        name = row[0].strip()
+            year = int(row["DIM_TIME"].strip())
+            val = float(row["AMOUNT_N"].strip())
+            sex_key = SEX_MAP[sex_code]
+            years_set.add(year)
 
-        # Filter out the stray header row present in the source sheet
-        if name == "WHO region":
-            continue
-
-        metrics = {
-            "male_pct": parse_pct(row[1]),
-            "male_2016": parse_num(row[2]),
-            "male_2000": parse_num(row[3]),
-            "female_pct": parse_pct(row[4]),
-            "female_2016": parse_num(row[5]),
-            "female_2000": parse_num(row[6]),
-        }
-
-        if name == "(WHO) Global":
-            global_benchmark = {"name": "WHO Global", **metrics}
-            continue
-
-        if name in WHO_REGION_NAMES:
-            region_benchmarks[name] = {"region": name, **metrics}
-            continue
-
-        region = COUNTRY_TO_WHO_REGION.get(name)
-        if region is None:
-            unmapped.append(name)
-            continue
-
-        countries.append({
-            "country": name,
-            "region": region,
-            **metrics,
-        })
+            if geo_type == "GLOBAL":
+                global_raw[sex_key][year] = val
+            elif geo_type == "WHOREGION":
+                region_raw[geo_name][sex_key][year] = val
+            elif geo_type in ENTITY_GEO_TYPES:
+                if geo_name not in COUNTRY_TO_WHO_REGION:
+                    unmapped.add(geo_name)
+                    continue
+                country_raw[geo_name][sex_key][year] = val
 
     if unmapped:
-        raise ValueError(f"Unmapped countries found: {unmapped}")
+        raise ValueError(f"Unmapped countries/territories found: {sorted(unmapped)}")
 
+    years = sorted(years_set)
+
+    global_benchmark = {
+        "name": "WHO Global",
+        **compute_series_block(global_raw, years),
+    }
+
+    region_benchmarks = {
+        region: {
+            "region": region,
+            **compute_series_block(region_raw[region], years),
+        }
+        for region in WHO_REGION_NAMES
+    }
+
+    countries = [
+        {
+            "country": name,
+            "region": COUNTRY_TO_WHO_REGION[name],
+            **compute_series_block(series_by_sex, years),
+        }
+        for name, series_by_sex in country_raw.items()
+    ]
     countries.sort(key=lambda d: (WHO_REGION_NAMES.index(d["region"]), d["country"]))
 
     return {
-        "source": "World Health Organization (WHO) — Global Health Observatory",
-        "source_url": "http://apps.who.int/gho/data/view.main.HALEXv?lang=en",
+        "source": "World Health Organization (WHO) — data.who.int (WHOSIS_000002)",
+        "source_url": "https://data.who.int/indicators/i/C64284D",
+        "csv_url": "https://srhdpeuwpubsa.blob.core.windows.net/whdh/DATADOT/INDICATOR/C64284D_ALL_LATEST.csv",
+        "years": years,
         "regions_order": list(WHO_REGION_NAMES),
         "global_benchmark": global_benchmark,
         "region_benchmarks": region_benchmarks,
@@ -286,19 +322,20 @@ def main() -> None:
 
     json_path = DATA_DIR / "hale.json"
     json_path.write_text(
-        json.dumps(dataset, ensure_ascii=False, indent=2),
+        json.dumps(dataset, ensure_ascii=False, separators=(",", ":")),
         encoding="utf-8",
     )
 
     fallback_js_path = DATA_DIR / "hale_fallback.js"
     fallback_js_path.write_text(
-        f"window.__HALE_FALLBACK__ = {json.dumps(dataset, ensure_ascii=False)};\n",
+        f"window.__HALE_FALLBACK__ = {json.dumps(dataset, ensure_ascii=False, separators=(',', ':'))};\n",
         encoding="utf-8",
     )
 
     print(
-        f"Exported {len(dataset['countries'])} countries across "
-        f"{len(dataset['regions_order'])} WHO regions to {json_path.relative_to(BASE_DIR)}"
+        f"Exported {len(dataset['countries'])} countries/territories across "
+        f"{len(dataset['regions_order'])} WHO regions ({dataset['years'][0]}–{dataset['years'][-1]}) "
+        f"to {json_path.relative_to(BASE_DIR)} ({json_path.stat().st_size / 1024:.1f} KB)"
     )
 
 

@@ -7,11 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=9">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
   <script src="app.js?v=2" defer></script>
-  <script src="beeswarm.js?v=2" defer></script>
+  <script src="beeswarm.js?v=4" defer></script>
   <script src="sankey.js?v=4" defer></script>
+  <script src="ozone.js?v=2" defer></script>
   <script src="scrollspy.js?v=1" defer></script>
 </head>
 <body>
@@ -20,7 +21,7 @@
       <div class="index-bar-inner">
         <div class="index-brand">
           <h1 class="index-heading">Chart Index</h1>
-          <span class="index-count" aria-hidden="true">3</span>
+          <span class="index-count" aria-hidden="true">4</span>
         </div>
 
         <nav class="chart-index-nav" aria-label="Chart types">
@@ -68,6 +69,18 @@
                 <span class="chart-index-text">
                   <span class="chart-index-name">Sankey Diagram</span>
                   <span class="chart-index-meta">Sweden Waste Flow</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="chart-index-link" href="#ozone">
+                <svg class="chart-index-icon" viewBox="0 0 20 20" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <path d="M9.5 2.5A7.5 7.5 0 0 0 9.5 17.5Z"/>
+                  <path d="M10.5 4.2A5.8 5.8 0 0 1 10.5 15.8Z" opacity="0.55"/>
+                </svg>
+                <span class="chart-index-text">
+                  <span class="chart-index-name">Proportional Areas</span>
+                  <span class="chart-index-meta">Ozone Hole Recovery</span>
                 </span>
               </a>
             </li>
@@ -143,27 +156,16 @@
                 <strong>Core Question:</strong> Which countries are highly efficient at converting their economic resources into actual human well-being and sustainability, and which wealthy nations are underperforming?
               </p>
 
-              <div class="metadata-grid">
-                <article class="meta-col">
-                  <h3>1. X-Axis: Sustainable Development (Overall Score)</h3>
-                  <p>
-                    Normalized score (<code>0–100</code>) measuring each country's total achievement across all <strong>17 UN Sustainable Development Goals (SDGs)</strong>, serving as the headline metric of the <cite>Sustainable Development Report</cite>.
-                  </p>
-                </article>
-
-                <article class="meta-col">
-                  <h3>2. Y-Axis: World Happiness Index (3-Year Average)</h3>
-                  <p>
-                    National life evaluation score (<code>0–10</code>) averaged over the three preceding survey years (e.g., 2022–2024). Ranking countries by their <strong>3-year rolling average</strong> provides a larger combined sample size for more precise estimates.
-                  </p>
-                </article>
-
-                <article class="meta-col">
-                  <h3>3. Bubble Area &amp; Color: GDP per Capita, PPP (Constant 2021 $)</h3>
-                  <p>
-                    Aligned with the <cite>World Happiness Report</cite> statistical appendix, wealth is measured via <strong>Purchasing Power Parity (PPP)</strong> at constant 2021 international dollars (latest available year). PPP adjusts for local cost of living, constant prices eliminate inflation distortion, and scaling radius by <code>√GDP</code> ensures bubble area reflects wealth volume.
-                  </p>
-                </article>
+              <div class="editorial-notes">
+                <p>
+                  <strong>X-Axis: Sustainable Development Index (0–100):</strong> Normalized score measuring progress across all 17 UN Sustainable Development Goals (SDGs) from the <em>Sustainable Development Report</em>.
+                </p>
+                <p>
+                  <strong>Y-Axis: World Happiness Index (0–10):</strong> National subjective well-being averaged over 3 survey years (2022–2024) from the <em>World Happiness Report</em>.
+                </p>
+                <p>
+                  <strong>Bubble Area: GDP per Capita (PPP 2021 $):</strong> Purchasing Power Parity at constant 2021 international dollars, square-root scaled so bubble surface accurately conveys wealth volume.
+                </p>
               </div>
 
               <footer class="sources-footer">
@@ -197,69 +199,21 @@
           <p class="section-question">
             How does Healthy Life Expectancy (HALE) at birth vary across world regions?
           </p>
-          <div class="header-subbar">
-            <p class="page-subtitle">
-              Comparing <strong>183 WHO member states</strong> separated by regions across <strong>Female &amp; Male (2000–2016)</strong>.
-            </p>
-
-            <search class="search-spotlight-area">
-              <form id="beeswarm-filter-form" class="filter-form" action="." method="GET">
-                <label for="beeswarm-search" class="visually-hidden">
-                  Highlight countries in the beeswarm plot
-                </label>
-                <div class="search-input-group">
-                  <span class="search-icon-slot" aria-hidden="true">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                  </span>
-                  <input
-                    id="beeswarm-search"
-                    name="hale-countries"
-                    class="search-input"
-                    type="search"
-                    list="beeswarm-country-list"
-                    placeholder="(e.g. Eritrea, Japan, Spain...)"
-                    autocorrect="off"
-                    autocapitalize="off"
-                    spellcheck="false"
-                    enterkeyhint="search"
-                  >
-                  <datalist id="beeswarm-country-list"></datalist>
-                  <button id="beeswarm-clear-search" class="btn-reset" type="button" aria-label="Reset beeswarm highlight filter">
-                    Reset
-                  </button>
-                </div>
-              </form>
-            </search>
-          </div>
+          <p class="page-subtitle">
+            Comparing <strong>185 countries &amp; territories</strong> across 6 WHO regions from <strong>2000 to 2023</strong> (latest official WHO Global Health Estimates).
+          </p>
         </header>
 
         <div class="beeswarm-controls">
           <fieldset class="control-group">
-            <legend class="control-legend">Metric</legend>
-            <div class="segmented-control">
-              <label class="segmented-option">
-                <input type="radio" name="hale-metric" value="2016" checked>
-                <span>2016 (Years)</span>
-              </label>
-              <label class="segmented-option">
-                <input type="radio" name="hale-metric" value="pct">
-                <span>% Change (2000–2016)</span>
-              </label>
-              <label class="segmented-option">
-                <input type="radio" name="hale-metric" value="2000">
-                <span>2000 (Years)</span>
-              </label>
-            </div>
-          </fieldset>
-
-          <fieldset class="control-group">
             <legend class="control-legend">Sex</legend>
             <div class="segmented-control">
               <label class="segmented-option">
-                <input type="radio" name="hale-sex" value="female" checked>
+                <input type="radio" name="hale-sex" value="total" checked>
+                <span>Both Sexes</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="hale-sex" value="female">
                 <span>Female</span>
               </label>
               <label class="segmented-option">
@@ -268,6 +222,55 @@
               </label>
             </div>
           </fieldset>
+
+          <div id="beeswarm-year-group" class="control-group">
+            <label for="beeswarm-year" class="control-legend">Year</label>
+            <select id="beeswarm-year" class="ozone-select"></select>
+          </div>
+
+          <fieldset class="control-group">
+            <legend class="control-legend">Metric</legend>
+            <div class="segmented-control">
+              <label class="segmented-option">
+                <input type="radio" name="hale-metric" value="year" checked>
+                <span>Annual HALE</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="hale-metric" value="pct">
+                <span>% Change (2000–2023)</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="control-group beeswarm-search-group">
+            <label for="beeswarm-search" class="control-legend">Find Country</label>
+            <form id="beeswarm-filter-form" class="filter-form" action="." method="GET">
+              <div class="search-input-group">
+                <span class="search-icon-slot" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input
+                  id="beeswarm-search"
+                  name="hale-countries"
+                  class="search-input"
+                  type="search"
+                  list="beeswarm-country-list"
+                  placeholder="Type country name..."
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  enterkeyhint="search"
+                >
+                <datalist id="beeswarm-country-list"></datalist>
+                <button id="beeswarm-clear-search" class="btn-reset" type="button" aria-label="Reset beeswarm highlight filter">
+                  Reset
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <figure class="viz-figure">
@@ -279,7 +282,7 @@
             aria-describedby="beeswarm-caption"
           ></div>
           <figcaption id="beeswarm-caption" class="viz-caption">
-            Showing female healthy life expectancy (2016) across 183 WHO member states grouped by official WHO region. Black diamonds mark each official WHO regional average; the dotted line marks the WHO Global average.
+            Showing both sexes healthy life expectancy (2023) across 185 countries and territories grouped by official WHO region. Diamonds mark regional averages; the dotted line marks the WHO Global average.
           </figcaption>
         </figure>
 
@@ -291,25 +294,24 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">Accessible Data Table (183 Countries by WHO Region)</span>
+              <span class="section-heading">Accessible Data Table (185 Countries &amp; Territories, 2000–2023)</span>
             </summary>
 
             <div class="notion-toggle-content">
               <div class="table-scroll-container" role="region" aria-labelledby="hale-table-caption" tabindex="0">
                 <table class="data-table">
                   <caption id="hale-table-caption">
-                    WHO Healthy Life Expectancy (HALE) at birth in years (2000 and 2016) and percentage change by country and WHO region.
+                    WHO Healthy Life Expectancy (HALE) at birth in years (2000 and 2023) and percentage change by country/territory and WHO region (Source: WHO Global Health Observatory, WHOSIS_000002).
                   </caption>
                   <thead>
                     <tr>
-                      <th scope="col">Country</th>
+                      <th scope="col">Country / Territory</th>
                       <th scope="col">WHO Region</th>
-                      <th scope="col">Female 2000 (yrs)</th>
-                      <th scope="col">Female 2016 (yrs)</th>
-                      <th scope="col">Female % Change</th>
-                      <th scope="col">Male 2000 (yrs)</th>
-                      <th scope="col">Male 2016 (yrs)</th>
-                      <th scope="col">Male % Change</th>
+                      <th scope="col">Both Sexes 2000 (yrs)</th>
+                      <th scope="col">Both Sexes 2023 (yrs)</th>
+                      <th scope="col">2000–2023 % Change</th>
+                      <th scope="col">Female 2023 (yrs)</th>
+                      <th scope="col">Male 2023 (yrs)</th>
                     </tr>
                   </thead>
                   <tbody id="beeswarm-table-body"></tbody>
@@ -328,43 +330,32 @@
 
             <div class="notion-toggle-content">
               <p class="section-lead">
-                <strong>What is HALE?</strong> Healthy Life Expectancy (HALE) at birth measures the average number of years a newborn is expected to live in <em>full health</em>, adjusting total life expectancy for years lived with disability or ill health.
+                <strong>What is HALE?</strong> Healthy Life Expectancy (HALE) at birth measures the average number of years a newborn is expected to live in <em>full health</em>, subtracting years lived with disability or ill health from overall life expectancy.
               </p>
 
-              <div class="metadata-grid">
-                <article class="meta-col">
-                  <h3>1. Regional Separation (6 WHO Regions)</h3>
-                  <p>
-                    Each horizontal lane groups member states into their official <strong>World Health Organization (WHO) region</strong>: Europe, Western Pacific, Americas, Eastern Mediterranean, South-East Asia, and Africa. Black diamonds indicate each region's official WHO aggregate average.
-                  </p>
-                </article>
-
-                <article class="meta-col">
-                  <h3>2. Collision-Free Beeswarm Packing</h3>
-                  <p>
-                    Unlike jittered strip plots, each dot's horizontal coordinate represents its exact value while vertical offsets are computed via deterministic circle-tangent packing so countries never overlap and regional density peaks remain legible.
-                  </p>
-                </article>
-
-                <article class="meta-col">
-                  <h3>3. 2000–2016 Progress &amp; Outliers</h3>
-                  <p>
-                    Switch to <strong>% Change (2000–2016)</strong> to observe rapid gains across Africa (led by Eritrea and Rwanda) contrasted with conflict-driven declines such as the Syrian Arab Republic.
-                  </p>
-                </article>
+              <div class="editorial-notes">
+                <p>
+                  <strong>6 WHO Regions (Colorblind-Safe Palette):</strong> Countries and territories are grouped into their official World Health Organization regions using the Okabe-Ito colorblind-safe palette. Diamonds mark the official aggregate regional average.
+                </p>
+                <p>
+                  <strong>Collision-Free Beeswarm:</strong> Each dot’s horizontal coordinate shows its exact value, while vertical offsets are calculated via circle-tangent packing so high-density peaks spread without overlapping.
+                </p>
+                <p>
+                  <strong>2000–2023 Recovery:</strong> Worldwide, healthy life expectancy improved by +4.9 years from 57.9 years in 2000 to 62.8 years in 2023, recovering steadily from the 2021 pandemic dip (61.4 years).
+                </p>
               </div>
 
               <footer class="sources-footer">
-                <strong>Data Source:</strong>
+                <strong>Data Sources:</strong>
                 <ul class="sources-list">
                   <li>
-                    <a href="https://apps.who.int/gho/data/view.main.HALEXv?lang=en" target="_blank" rel="noopener noreferrer">
-                      World Health Organization (WHO) — Global Health Observatory (HALE at birth)
+                    <a href="https://data.who.int/indicators/i/C64284D" target="_blank" rel="noopener noreferrer">
+                      World Health Organization (WHO) — data.who.int (HALE at birth, WHOSIS_000002)
                     </a>
                   </li>
                   <li>
-                    <a href="https://docs.google.com/spreadsheets/d/1_0_lEZIsSy73rWGPr3t85KmsYqevKv7M8AJuOW2NFrY/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer">
-                      Source Dataset (Google Sheets)
+                    <a href="https://ghoapi.azureedge.net/api/WHOSIS_000002" target="_blank" rel="noopener noreferrer">
+                      WHO Global Health Observatory OData API (2000–2023)
                     </a>
                   </li>
                 </ul>
@@ -466,27 +457,16 @@
                 <strong>50 Years of Waste Transition:</strong> Between 1975 and 2025, Sweden reduced municipal landfill from <strong>1.62M tonnes (62.3%)</strong> to <strong>67,370 tonnes (1.5%)</strong> while scaling energy recovery, material recycling, and biological treatment.
               </p>
 
-              <div class="metadata-grid">
-                <article class="meta-col">
-                  <h3>1. Left Stage: 5-Year Periods</h3>
-                  <p>
-                    Data is grouped by <strong>10 five-year periods</strong> (from <strong>2020–2025</strong> down to <strong>1975–1979</strong>) showing annual average tonnes treated. This eliminates spaghetti ribbons, saves vertical space, and ensures clean visual comparability across the 50-year transition.
-                  </p>
-                </article>
-
-                <article class="meta-col">
-                  <h3>2. Right Stage: Treatment Pathways</h3>
-                  <p>
-                    Each ribbon width is proportional to metric tonnes treated across <strong>Energy Recovery</strong>, <strong>Material Recycling</strong>, <strong>Biological Treatment</strong>, <strong>Landfill</strong>, <strong>Construction Material Recycling</strong> (since 2020), and <strong>Prepared for Reuse</strong> (2025).
-                  </p>
-                </article>
-
-                <article class="meta-col">
-                  <h3>3. Multi-Mode Exploration</h3>
-                  <p>
-                    Use the control above to switch between <strong>5-Year Periods (Annual Avg)</strong>, <strong>Milestones (Every 5 Yrs)</strong>, or view all <strong>36 yearly records</strong>.
-                  </p>
-                </article>
+              <div class="editorial-notes">
+                <p>
+                  <strong>5-Year Lustro Periods:</strong> Data is aggregated into 10 five-year lustro periods (2020–2025 down to 1975–1979) showing annual average tonnes treated. This eliminates visual spaghetti while preserving long-term transition trends.
+                </p>
+                <p>
+                  <strong>Treatment Pathways:</strong> Ribbon widths reflect metric tonnes handled across Energy Recovery, Material Recycling, Biological Treatment, Landfill, Construction Material Recycling, and Prepared for Reuse.
+                </p>
+                <p>
+                  <strong>Multi-Mode Comparison:</strong> Use the control above to switch between 5-Year Periods (Annual Avg), Milestones (Every 5 Yrs), or raw yearly records.
+                </p>
               </div>
 
               <footer class="sources-footer">
@@ -505,6 +485,132 @@
                   <li>
                     <a href="https://www.avfallsverige.se/media/bigjrvsu/avfallstrenden_a4_2024.pdf" target="_blank" rel="noopener noreferrer">
                       Avfallstrenden 2024 (PDF, 2024–2025)
+                    </a>
+                  </li>
+                </ul>
+              </footer>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section id="ozone" class="chart-section ozone-section" tabindex="-1">
+        <header class="section-header">
+          <h2 id="ozone-title" class="page-title">PROPORTIONAL AREAS</h2>
+          <p class="section-question">
+            How much has the Antarctic ozone hole shrunk since its historical peak?
+          </p>
+          <div class="header-subbar">
+            <p class="page-subtitle">
+              Area-scaled comparison of <strong>Antarctic ozone hole extent (1979–2025)</strong> in <strong>million km²</strong> and minimum column ozone in <strong>Dobson Units (DU)</strong> (Source: <cite>NASA Ozone Watch</cite>).
+            </p>
+          </div>
+        </header>
+
+        <div class="ozone-controls">
+          <fieldset class="control-group">
+            <legend class="control-legend">Comparison</legend>
+            <div class="segmented-control">
+              <label class="segmented-option">
+                <input type="radio" name="ozone-mode" value="peak-vs-2025" checked>
+                <span>2006 vs. 2025</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="ozone-mode" value="peak-vs-5yr">
+                <span>2006 vs. 2021–2025</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="ozone-mode" value="decades">
+                <span>2000s vs. 2016–2025</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="ozone-mode" value="custom">
+                <span>Custom</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div id="ozone-custom-years" class="ozone-custom-years" hidden>
+            <div class="ozone-select-field">
+              <label for="ozone-left-year" class="control-legend">Before</label>
+              <select id="ozone-left-year" class="ozone-select"></select>
+            </div>
+            <div class="ozone-select-field">
+              <label for="ozone-right-year" class="control-legend">Now</label>
+              <select id="ozone-right-year" class="ozone-select"></select>
+            </div>
+          </div>
+        </div>
+
+        <figure class="viz-figure">
+          <div id="ozone-plot" class="ozone-canvas"></div>
+          <figcaption id="ozone-caption" class="viz-caption">
+            Center-aligned semicircles scaled strictly by area (r ∝ √area) comparing 2006 (26.6M km²) against 2025 (18.7M km²). Dashed ring: Antarctica (14.2M km²). Center dot: 1979 pre-hole baseline (0.1M km²).
+          </figcaption>
+        </figure>
+
+        <p id="ozone-status" class="visually-hidden" aria-live="polite"></p>
+
+        <div class="beeswarm-disclosures">
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span class="section-heading">Accessible Data Table (46 Years, 1979–2025)</span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <div class="table-scroll-container" role="region" aria-labelledby="ozone-table-caption" tabindex="0">
+                <table class="data-table">
+                  <caption id="ozone-table-caption">
+                    Antarctic ozone hole seasonal mean area (07 Sep–13 Oct, million km²) and minimum column ozone (21 Sep–16 Oct, Dobson Units) from 2025 down to 1979 (Source: NASA Ozone Watch).
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Year</th>
+                      <th scope="col">Ozone Hole Area (million km²)</th>
+                      <th scope="col">Minimum Ozone (DU)</th>
+                      <th scope="col">% of 2006 Peak</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ozone-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span class="section-heading">About This Proportional Areas Chart &amp; Methodology</span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <p class="section-lead">
+                <strong>Why Proportional Areas?</strong> Because ozone hole extent is literally measured as a surface area in <strong>million km²</strong>, encoding area with area mirrors satellite views of the polar vortex while letting readers judge recovery at a single glance.
+              </p>
+
+              <div class="editorial-notes">
+                <p>
+                  <strong>Scaled by Area, Never by Radius:</strong> Each semicircle radius is computed as <code>r = R<sub>max</sub> × √(A / A<sub>max</sub>)</code>. Dividing the radius directly would shrink the visual area by a factor of 4 and exaggerate changes; square-root scaling guarantees area truthfulness.
+                </p>
+                <p>
+                  <strong>Center-Aligned Step &amp; Geography Anchor:</strong> Adjoining both area halves along a shared vertical axis creates an instantaneous visual step. Concentric reference rings for <strong>Antarctica (14.2M km²)</strong> and the <strong>1979 pre-hole baseline (0.1M km²)</strong> ground abstract figures in real geography.
+                </p>
+                <p>
+                  <strong>NASA Seasonal Windows &amp; Decadal Trends:</strong> Antarctic winter stratospheric temperatures cause natural meteorological swings. Comparing key benchmarks (2006 peak vs. 2025 or 5-year means) isolates Montreal Protocol progress.
+                </p>
+              </div>
+
+              <footer class="sources-footer">
+                <strong>Data Source:</strong>
+                <ul class="sources-list">
+                  <li>
+                    <a href="https://ozonewatch.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">
+                      NASA Ozone Watch — Goddard Space Flight Center (GSFC), 1979–2025
                     </a>
                   </li>
                 </ul>
