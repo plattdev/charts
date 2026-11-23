@@ -7,34 +7,39 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=2026">
+
+  <!-- Vendor (required only for Scatter & Beeswarm templates) -->
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
-  <script src="app.js?v=2" defer></script>
-  <script src="beeswarm.js?v=4" defer></script>
-  <script src="streamgraph.js?v=2" defer></script>
-  <script src="ozone.js?v=2" defer></script>
-  <script src="waffle.js?v=2" defer></script>
-  <script src="scrollspy.js?v=1" defer></script>
+
+  <!-- Shared visualization primitives (required by all 6 chart templates) -->
+  <script src="chart-core.js?v=2026" defer></script>
+
+  <!-- Standalone reusable chart templates (keep only the scripts you use) -->
+  <script src="scatter.js?v=2026" defer></script>
+  <script src="beeswarm.js?v=2026" defer></script>
+  <script src="streamgraph.js?v=2026" defer></script>
+  <script src="ozone.js?v=2026" defer></script>
+  <script src="waffle.js?v=2026" defer></script>
+  <script src="sankey.js?v=2026" defer></script>
+  <script src="scrollspy.js?v=2026" defer></script>
 </head>
 <body>
-  <div class="container">
-    <header class="portfolio-header">
-      <div class="portfolio-kicker">
-        <span class="portfolio-tag">Data Analyst Portfolio</span>
-        <span class="portfolio-dot" aria-hidden="true">·</span>
-        <span class="portfolio-subtag">Interactive Data Visualizations</span>
-      </div>
+  <header class="portfolio-header">
+    <div class="portfolio-header-inner">
       <h1 class="portfolio-title">Scroll or select a selection of charts created with Open data</h1>
       <p class="portfolio-lead">
         Curated interactive views, distributions, and multi-dimensional flows built with public open data to explore global development, health equity, sustainability, and climate hazards.
       </p>
-    </header>
+    </div>
+  </header>
 
+  <div class="container">
     <header class="index-bar">
       <div class="index-bar-inner">
         <div class="index-brand">
           <span class="index-heading">Chart Index</span>
-          <span class="index-count" aria-hidden="true">5</span>
+          <span class="index-count" aria-hidden="true">6</span>
         </div>
 
         <nav class="chart-index-nav" aria-label="Chart types">
@@ -116,14 +121,41 @@
                 </span>
               </a>
             </li>
+            <li>
+              <a class="chart-index-link" href="#sankey">
+                <svg class="chart-index-icon" viewBox="0 0 20 20" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <rect x="2" y="2.5" width="2.2" height="7"/>
+                  <rect x="2" y="11" width="2.2" height="6.5" opacity="0.72"/>
+                  <rect x="8.9" y="2.5" width="2.2" height="6.5"/>
+                  <rect x="8.9" y="10.2" width="2.2" height="3.8" opacity="0.72"/>
+                  <rect x="8.9" y="15" width="2.2" height="2.5" opacity="0.5"/>
+                  <rect x="15.8" y="2.5" width="2.2" height="5"/>
+                  <rect x="15.8" y="8.5" width="2.2" height="4.5" opacity="0.72"/>
+                  <rect x="15.8" y="14" width="2.2" height="3.5" opacity="0.5"/>
+                  <path d="M4.2 2.5C6.5 2.5 6.5 2.5 8.9 2.5V9C6.5 9 6.5 9.5 4.2 9.5Z" opacity="0.38"/>
+                  <path d="M4.2 11C6.5 11 6.5 10.2 8.9 10.2V14C6.5 14 6.5 14.8 4.2 14.8Z" opacity="0.32"/>
+                  <path d="M11.1 2.5C13.5 2.5 13.5 2.5 15.8 2.5V7.5C13.5 7.5 13.5 8 11.1 8Z" opacity="0.38"/>
+                  <path d="M11.1 10.2C13.5 10.2 13.5 8.5 15.8 8.5V13C13.5 13 13.5 14 11.1 14Z" opacity="0.32"/>
+                </svg>
+                <span class="chart-index-text">
+                  <span class="chart-index-name">Sankey Plot</span>
+                  <span class="chart-index-meta">Global Displacement</span>
+                </span>
+              </a>
+            </li>
           </ol>
         </nav>
       </div>
     </header>
 
     <main>
-      <section id="scatter" class="chart-section scatter-section" tabindex="-1">
-        <header class="page-header">
+      <!-- ====================================================================
+           TEMPLATE 1/6: BUBBLE SCATTER PLOT (scatter.js)
+           Required DOM IDs: #bubble-plot, #country-filter-form, #country-search,
+                             #country-list, #clear-search, #search-status
+           ==================================================================== -->
+      <section id="scatter" class="chart-section" aria-labelledby="scatter-title" tabindex="-1">
+        <header class="section-header">
           <h2 id="scatter-title" class="page-title">SCATTER PLOT</h2>
           <p class="section-question">Which countries convert their economic resources into actual human well-being and sustainability?</p>
           <div class="header-subbar">
@@ -163,24 +195,22 @@
           </div>
         </header>
 
-        <div class="viz-section">
+        <figure class="viz-figure">
           <div
             id="bubble-plot"
             class="chart-canvas"
             role="img"
             aria-label="Bubble plot with Sustainable Development Index on the X-axis, World Happiness Score on the Y-axis, and bubble area and color proportional to GDP per capita PPP"
           ></div>
-        </div>
+        </figure>
 
-        <div class="methodology-section">
+        <div class="chart-disclosures">
           <details class="notion-toggle">
             <summary class="notion-toggle-summary">
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span id="methodology-heading" class="section-heading">
-                About This Visualization &amp; Methodology
-              </span>
+              <span class="section-heading">About This Visualization &amp; Methodology</span>
             </summary>
 
             <div class="notion-toggle-content">
@@ -225,7 +255,14 @@
         </div>
       </section>
 
-      <section id="beeswarm" class="chart-section beeswarm-section" tabindex="-1">
+      <!-- ====================================================================
+           TEMPLATE 2/6: GROUPED BEESWARM PLOT (beeswarm.js)
+           Required DOM IDs: #beeswarm-plot, #beeswarm-year-group, #beeswarm-year,
+                             #beeswarm-filter-form, #beeswarm-search, #beeswarm-country-list,
+                             #beeswarm-clear-search, #beeswarm-caption, #beeswarm-status,
+                             #beeswarm-table-body
+           ==================================================================== -->
+      <section id="beeswarm" class="chart-section" aria-labelledby="beeswarm-title" tabindex="-1">
         <header class="section-header">
           <h2 id="beeswarm-title" class="page-title">BEESWARM PLOT</h2>
           <p class="section-question">
@@ -236,7 +273,7 @@
           </p>
         </header>
 
-        <div class="beeswarm-controls">
+        <div class="chart-controls">
           <fieldset class="control-group">
             <legend class="control-legend">Sex</legend>
             <div class="segmented-control">
@@ -257,7 +294,7 @@
 
           <div id="beeswarm-year-group" class="control-group">
             <label for="beeswarm-year" class="control-legend">Year</label>
-            <select id="beeswarm-year" class="ozone-select"></select>
+            <select id="beeswarm-year" class="chart-select"></select>
           </div>
 
           <fieldset class="control-group">
@@ -320,7 +357,7 @@
 
         <p id="beeswarm-status" class="visually-hidden" aria-live="polite"></p>
 
-        <div class="beeswarm-disclosures">
+        <div class="chart-disclosures">
           <details class="notion-toggle">
             <summary class="notion-toggle-summary">
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
@@ -397,7 +434,12 @@
         </div>
       </section>
 
-      <section id="streamgraph" class="chart-section streamgraph-section" tabindex="-1">
+      <!-- ====================================================================
+           TEMPLATE 3/6: MONOTONE CUBIC STREAMGRAPH (streamgraph.js)
+           Required DOM IDs: #streamgraph-plot, #streamgraph-caption,
+                             #streamgraph-status, #streamgraph-table-body
+           ==================================================================== -->
+      <section id="streamgraph" class="chart-section" aria-labelledby="streamgraph-title" tabindex="-1">
         <header class="section-header">
           <h2 id="streamgraph-title" class="page-title">STREAMGRAPH</h2>
           <p class="section-question">
@@ -408,7 +450,7 @@
           </p>
         </header>
 
-        <div class="streamgraph-controls">
+        <div class="chart-controls">
           <fieldset class="control-group">
             <legend class="control-legend">Baseline Mode</legend>
             <div class="segmented-control">
@@ -437,7 +479,7 @@
 
         <p id="streamgraph-status" class="visually-hidden" aria-live="polite"></p>
 
-        <div class="beeswarm-disclosures">
+        <div class="chart-disclosures">
           <details class="notion-toggle">
             <summary class="notion-toggle-summary">
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
@@ -520,7 +562,13 @@
         </div>
       </section>
 
-      <section id="ozone" class="chart-section ozone-section" tabindex="-1">
+      <!-- ====================================================================
+           TEMPLATE 4/6: PROPORTIONAL AREAS SEMICIRCLES (ozone.js)
+           Required DOM IDs: #ozone-plot, #ozone-custom-years, #ozone-left-year,
+                             #ozone-right-year, #ozone-caption, #ozone-status,
+                             #ozone-table-body
+           ==================================================================== -->
+      <section id="ozone" class="chart-section" aria-labelledby="ozone-title" tabindex="-1">
         <header class="section-header">
           <h2 id="ozone-title" class="page-title">PROPORTIONAL AREAS</h2>
           <p class="section-question">
@@ -533,7 +581,7 @@
           </div>
         </header>
 
-        <div class="ozone-controls">
+        <div class="chart-controls">
           <fieldset class="control-group">
             <legend class="control-legend">Comparison</legend>
             <div class="segmented-control">
@@ -559,11 +607,11 @@
           <div id="ozone-custom-years" class="ozone-custom-years" hidden>
             <div class="ozone-select-field">
               <label for="ozone-left-year" class="control-legend">Before</label>
-              <select id="ozone-left-year" class="ozone-select"></select>
+              <select id="ozone-left-year" class="chart-select"></select>
             </div>
             <div class="ozone-select-field">
               <label for="ozone-right-year" class="control-legend">Now</label>
-              <select id="ozone-right-year" class="ozone-select"></select>
+              <select id="ozone-right-year" class="chart-select"></select>
             </div>
           </div>
         </div>
@@ -577,7 +625,7 @@
 
         <p id="ozone-status" class="visually-hidden" aria-live="polite"></p>
 
-        <div class="beeswarm-disclosures">
+        <div class="chart-disclosures">
           <details class="notion-toggle">
             <summary class="notion-toggle-summary">
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
@@ -646,7 +694,13 @@
         </div>
       </section>
 
-      <section id="waffle" class="chart-section waffle-section" tabindex="-1">
+      <!-- ====================================================================
+           TEMPLATE 5/6: MULTI-SCENARIO 10x10 WAFFLE CHART (waffle.js)
+           Required DOM IDs: #waffle-plot, #waffle-hazard-select,
+                             #waffle-threshold-note, #waffle-caption,
+                             #waffle-status, #waffle-table-body
+           ==================================================================== -->
+      <section id="waffle" class="chart-section" aria-labelledby="waffle-title" tabindex="-1">
         <header class="section-header">
           <h2 id="waffle-title" class="page-title">WAFFLE CHART</h2>
           <p class="section-question">
@@ -657,10 +711,10 @@
           </p>
         </header>
 
-        <div class="waffle-controls">
+        <div class="chart-controls">
           <div class="control-group">
             <label for="waffle-hazard-select" class="control-legend">Climate Hazard</label>
-            <select id="waffle-hazard-select" class="ozone-select"></select>
+            <select id="waffle-hazard-select" class="chart-select"></select>
           </div>
           <p id="waffle-threshold-note" class="waffle-threshold-note">
             Extreme threshold: ≥ 60 days/yr above local 95th percentile
@@ -676,7 +730,7 @@
 
         <p id="waffle-status" class="visually-hidden" aria-live="polite"></p>
 
-        <div class="beeswarm-disclosures">
+        <div class="chart-disclosures">
           <details class="notion-toggle">
             <summary class="notion-toggle-summary">
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
@@ -751,7 +805,137 @@
           </details>
         </div>
       </section>
+
+      <!-- ====================================================================
+           TEMPLATE 6/6: 3-STAGE BARYCENTER SANKEY DIAGRAM (sankey.js)
+           Required DOM IDs: #sankey-plot, #sankey-status,
+                             #sankey-table-caption, #sankey-table-body
+           ==================================================================== -->
+      <section id="sankey" class="chart-section" aria-labelledby="sankey-title" tabindex="-1">
+        <header class="section-header">
+          <h2 id="sankey-title" class="page-title">SANKEY PLOT</h2>
+          <p class="section-question">
+            What drove 62.3 million internal displacements worldwide in 2025, and which regions bore the impact?
+          </p>
+          <p class="page-subtitle">
+            3-stage flow of <strong>global internal displacements (flows, 2020–2025)</strong> from <strong>Primary Cause</strong> (Conflict vs. Disaster) through <strong>Hazard Type</strong> into <strong>7 World Regions</strong> (Source: <cite>IDMC Global Internal Displacement Database</cite>).
+          </p>
+        </header>
+
+        <div class="chart-controls">
+          <fieldset class="control-group">
+            <legend class="control-legend">Reporting Year</legend>
+            <div class="segmented-control">
+              <label class="segmented-option">
+                <input type="radio" name="sankey-year" value="2020">
+                <span>2020</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="sankey-year" value="2021">
+                <span>2021</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="sankey-year" value="2022">
+                <span>2022</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="sankey-year" value="2023">
+                <span>2023</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="sankey-year" value="2024">
+                <span>2024</span>
+              </label>
+              <label class="segmented-option">
+                <input type="radio" name="sankey-year" value="2025" checked>
+                <span>2025</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <figure class="viz-figure">
+          <div id="sankey-plot" class="sankey-canvas"></div>
+        </figure>
+
+        <p id="sankey-status" class="visually-hidden" aria-live="polite"></p>
+
+        <div class="chart-disclosures">
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span class="section-heading">Accessible Data Table (Displacements by Cause &amp; Hazard Type)</span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <div class="table-scroll-container" role="region" aria-labelledby="sankey-table-caption" tabindex="0">
+                <table class="data-table">
+                  <caption id="sankey-table-caption">
+                    Global internal displacements (flows) in 2025 by primary cause, hazard subcategory, and leading affected region (Source: IDMC GIDD).
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Primary Cause</th>
+                      <th scope="col">Hazard / Trigger</th>
+                      <th scope="col">Internal Displacements</th>
+                      <th scope="col">Share of Global Total</th>
+                      <th scope="col">Most Affected Region</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sankey-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <details class="notion-toggle">
+            <summary class="notion-toggle-summary">
+              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span class="section-heading">About This Sankey Plot &amp; Methodology</span>
+            </summary>
+
+            <div class="notion-toggle-content">
+              <p class="section-lead">
+                <strong>Internal Displacements (Flows) vs. IDPs (Stocks):</strong> Following IDMC methodology, this Sankey aggregates <strong>Internal Displacements</strong>—annual population displacement movements recorded between January 1 and December 31—rather than year-end IDP stocks, preserving event-level attribution to specific hazards and regions.
+              </p>
+
+              <div class="editorial-notes">
+                <p>
+                  <strong>Continuous 3-Stage Flow (Conflict &amp; Violence):</strong> Because conflict records do not carry a natural hazard classification in GIDD, blank hazard cells for conflict rows are explicitly mapped to <strong>Conflict &amp; Violence</strong> in Stage 2 so the full 100% flow remains unbroken across all three stages.
+                </p>
+                <p>
+                  <strong>Long-Tail Grouping &amp; Crossing Minimization:</strong> The five largest disaster hazards (<strong>Storm, Flood, Earthquake, Wildfire, Drought</strong>) are shown individually while smaller hazards (mixed disasters, erosion, mass movement, volcanic activity, extreme temperature) roll into <strong>Other Disasters</strong>. Stage 3 regions are ordered by weighted source barycenter to minimize ribbon crossings.
+                </p>
+                <p>
+                  <strong>Colorblind-Safe Encoding:</strong> Ribbons inherit their Stage 2 trigger hue—muted terracotta (<code>#B84A39</code>) for conflict, steel blue (<code>#2A6F8E</code>) for storms, deep teal (<code>#2B8270</code>) for floods, plum-slate (<code>#7B6D8D</code>) for earthquakes, ochre-orange (<code>#D97724</code>) for wildfires, and amber (<code>#D49B2A</code>) for drought—while destination regions use neutral slate bars (<code>#334155</code>) so readers can trace each driver cleanly.
+                </p>
+              </div>
+
+              <footer class="sources-footer">
+                <strong>Data Source:</strong>
+                <ul class="sources-list">
+                  <li>
+                    <a href="https://www.internal-displacement.org/database/displacement-data/" target="_blank" rel="noopener noreferrer">
+                      Internal Displacement Monitoring Centre (IDMC) — Global Internal Displacement Database (GIDD), Disaggregated Flows (2020–2025)
+                    </a>
+                  </li>
+                </ul>
+              </footer>
+            </div>
+          </details>
+        </div>
+      </section>
     </main>
+
+    <footer class="site-footer">
+      <p class="site-footer-copyright">
+        © 2026 <a href="https://portfolio-plattdata.vercel.app/" target="_blank" rel="noopener noreferrer" class="site-footer-link"><strong>plaTTdata</strong></a>
+      </p>
+    </footer>
   </div>
 </body>
 </html>

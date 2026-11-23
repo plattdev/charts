@@ -1,95 +1,86 @@
 /**
- * Waffle Chart Module:
- * Loads World Resources Institute (WRI) City-Scale Climate Hazard Indicators
- * (996 cities >500k residents across +1.5°C, +2.0°C, and +3.0°C warming)
- * from ./data/hazards.json (with automatic file:// fallback) and renders
- * 3 side-by-side 10 × 10 SVG waffle grids (1 square = 1% of major cities
- * exceeding each extreme risk threshold).
+ * ============================================================================
+ * TEMPLATE 5 — Multi-Scenario 10x10 SVG Waffle Chart
+ * ============================================================================
+ * HOW TO REUSE WITH YOUR OWN DATA:
+ *   1. Export JSON with this schema:
+ *        {
+ *          "hazards": [
+ *            {
+ *              "id": "extreme_heat",
+ *              "label": "Extreme Heat Days",
+ *              "category": "Heat",
+ *              "threshold_label": ">= 60 days/yr above local 95th percentile",
+ *              "scenarios": {
+ *                "1.5C": { "pct": 6.0, "cells": 6, "cities": 60, "valid_cities": 996, "pop_millions": 140 },
+ *                "2.0C": { "pct": 14.9, "cells": 15, "cities": 148, "valid_cities": 996, "pop_millions": 340 },
+ *                "3.0C": { "pct": 45.4, "cells": 45, "cities": 452, "valid_cities": 996, "pop_millions": 1020 }
+ *              }
+ *            }
+ *          ]
+ *        }
+ *   2. Update CONFIG below (data paths, scenario keys/labels, colors, and unit text).
+ *   3. Copy <section id="waffle"> from index.html.
+ * ============================================================================
  */
 
 (() => {
-  const SVG_NS = "http://www.w3.org/2000/svg";
+  "use strict";
 
-  /** Colorblind-safe sequential warm ramp (distinct hue + luminance steps) */
-  const SCENARIO_META = [
-    {
-      key: "1.5C",
-      label: "+1.5°C",
-      sublabel: "Paris target",
-      color: "#E69F00",
-      textColor: "#B45309",
+  const {
+    PALETTES,
+    el,
+    svgEl,
+    loadJson,
+    renderError,
+    renderTableRows,
+    formatExact,
+  } = globalThis.ChartKit;
+
+  // --------------------------------------------------------------------------
+  // TEMPLATE CONFIG — Replace these values for your next dataset
+  // --------------------------------------------------------------------------
+  const CONFIG = {
+    data: {
+      url: "./data/hazards.json",
+      fallbackUrl: "./data/hazards_fallback.js",
+      fallbackKey: "__HAZARDS_FALLBACK__",
+      validate: (d) => Boolean(d && Array.isArray(d.hazards) && d.hazards.length > 0),
     },
-    {
-      key: "2.0C",
-      label: "+2.0°C",
-      sublabel: "Upper limit",
-      color: "#D55E00",
-      textColor: "#C2410C",
+    ids: {
+      plot: "waffle-plot",
+      select: "waffle-hazard-select",
+      thresholdNote: "waffle-threshold-note",
+      caption: "waffle-caption",
+      status: "waffle-status",
+      tableBody: "waffle-table-body",
     },
-    {
-      key: "3.0C",
-      label: "+3.0°C",
-      sublabel: "High warming",
-      color: "#9E2A2B",
-      textColor: "#9E2A2B",
+    grid: {
+      cols: 10,
+      rows: 10,
+      cellSize: 18,
+      gap: 4,
+      emptyColor: "#E2E8F0",
     },
-  ];
+    /** Colorblind-safe sequential warm ramp (distinct hue + luminance steps) */
+    scenarios: [
+      { key: "1.5C", label: "+1.5°C", color: PALETTES.warmSequential[0], textColor: "#B45309" },
+      { key: "2.0C", label: "+2.0°C", color: PALETTES.warmSequential[1], textColor: "#C2410C" },
+      { key: "3.0C", label: "+3.0°C", color: PALETTES.warmSequential[2], textColor: "#9E2A2B" },
+    ],
+  };
 
-  const EMPTY_CELL_COLOR = "#E2E8F0";
-
-  function svgEl(tag, attrs = {}) {
-    const el = document.createElementNS(SVG_NS, tag);
-    for (const [k, v] of Object.entries(attrs)) {
-      el.setAttribute(k, String(v));
-    }
-    return el;
-  }
-
-  async function loadHazardsData() {
-    try {
-      const response = await fetch("./data/hazards.json");
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      return await response.json();
-    } catch (err) {
-      return new Promise((resolve, reject) => {
-        if (window.__HAZARDS_FALLBACK__ && Array.isArray(window.__HAZARDS_FALLBACK__.hazards)) {
-          resolve(window.__HAZARDS_FALLBACK__);
-          return;
-        }
-        const script = document.createElement("script");
-        script.src = "./data/hazards_fallback.js";
-        script.onload = () => {
-          if (window.__HAZARDS_FALLBACK__ && Array.isArray(window.__HAZARDS_FALLBACK__.hazards)) {
-            resolve(window.__HAZARDS_FALLBACK__);
-          } else {
-            reject(err);
-          }
-        };
-        script.onerror = () => reject(err);
-        document.head.appendChild(script);
-      });
-    }
-  }
-
-  function formatPop(millions) {
+  function formatPopulation(millions) {
     if (millions >= 1000) {
       return `${(millions / 1000).toFixed(2)}B people`;
     }
-    return `${Math.round(millions).toLocaleString("en-US")}M people`;
+    return `${formatExact(millions)}M people`;
   }
 
-  /**
-   * Build a crisp 10 × 10 SVG waffle grid filled bottom-to-top, left-to-right.
-   * Each square represents 1% of cities exceeding the extreme hazard threshold.
-   */
+  /** Build a crisp 10x10 SVG waffle grid filled bottom-to-top, left-to-right. */
   function buildWaffleSvg(filledCells, fillColor, ariaLabel) {
-    const cols = 10;
-    const rows = 10;
-    const cellSize = 18;
-    const gap = 4;
-    const totalSize = cols * cellSize + (cols - 1) * gap; // 216px
+    const { cols, rows, cellSize, gap, emptyColor } = CONFIG.grid;
+    const totalSize = cols * cellSize + (cols - 1) * gap;
 
     const svg = svgEl("svg", {
       viewBox: `0 0 ${totalSize} ${totalSize}`,
@@ -98,174 +89,150 @@
       "aria-label": ariaLabel,
     });
 
-    const title = svgEl("title");
-    title.textContent = ariaLabel;
-    svg.appendChild(title);
-
-    // Fill bottom-to-top (row 9 down to 0), left-to-right (col 0 to 9)
     let index = 0;
     for (let r = rows - 1; r >= 0; r--) {
       for (let c = 0; c < cols; c++) {
         index += 1;
         const isFilled = index <= filledCells;
-        const rect = svgEl("rect", {
-          x: c * (cellSize + gap),
-          y: r * (cellSize + gap),
-          width: cellSize,
-          height: cellSize,
-          fill: isFilled ? fillColor : EMPTY_CELL_COLOR,
-          class: isFilled ? "waffle-cell waffle-cell--filled" : "waffle-cell",
-        });
-        svg.appendChild(rect);
+        svg.appendChild(
+          svgEl("rect", {
+            x: c * (cellSize + gap),
+            y: r * (cellSize + gap),
+            width: cellSize,
+            height: cellSize,
+            fill: isFilled ? fillColor : emptyColor,
+            class: "waffle-cell",
+          })
+        );
       }
     }
 
     return svg;
   }
 
-  function renderAccessibleTable(tbodyEl, hazards) {
-    if (!tbodyEl) return;
-    const frag = document.createDocumentFragment();
-
-    for (const h of hazards) {
-      const s15 = h.scenarios["1.5C"];
-      const s20 = h.scenarios["2.0C"];
-      const s30 = h.scenarios["3.0C"];
-      const delta = s30.pct - s15.pct;
-      const sign = delta > 0 ? "+" : "";
-
-      const tr = document.createElement("tr");
-
-      const th = document.createElement("th");
-      th.scope = "row";
-      th.textContent = h.label;
-      tr.appendChild(th);
-
-      const cells = [
-        h.threshold_label,
-        `${s15.pct.toFixed(1)}% (${s15.cities})`,
-        `${s20.pct.toFixed(1)}% (${s20.cities})`,
-        `${s30.pct.toFixed(1)}% (${s30.cities})`,
-        `${sign}${delta.toFixed(1)} pp`,
-      ];
-
-      for (const text of cells) {
-        const td = document.createElement("td");
-        td.textContent = text;
-        tr.appendChild(td);
-      }
-
-      frag.appendChild(tr);
-    }
-
-    tbodyEl.replaceChildren(frag);
-  }
-
   async function initWaffle() {
-    const plotEl = document.getElementById("waffle-plot");
+    const plotEl = document.getElementById(CONFIG.ids.plot);
     if (!plotEl) return;
 
-    const selectEl = document.getElementById("waffle-hazard-select");
-    const thresholdNoteEl = document.getElementById("waffle-threshold-note");
-    const captionEl = document.getElementById("waffle-caption");
-    const statusEl = document.getElementById("waffle-status");
-    const tbodyEl = document.getElementById("waffle-table-body");
+    const selectEl = document.getElementById(CONFIG.ids.select);
+    const thresholdNoteEl = document.getElementById(CONFIG.ids.thresholdNote);
+    const captionEl = document.getElementById(CONFIG.ids.caption);
+    const statusEl = document.getElementById(CONFIG.ids.status);
+    const tbodyEl = document.getElementById(CONFIG.ids.tableBody);
 
-    const dataset = await loadHazardsData();
+    let dataset;
+    try {
+      dataset = await loadJson(CONFIG.data);
+    } catch (err) {
+      renderError(plotEl, "Unable to load waffle chart dataset. Please check", CONFIG.data.url);
+      console.error("Waffle load error:", err);
+      return;
+    }
+
     const { hazards } = dataset;
+    const [firstSc, midSc, lastSc] = CONFIG.scenarios;
 
     if (selectEl) {
       const frag = document.createDocumentFragment();
       for (const h of hazards) {
-        const opt = document.createElement("option");
-        opt.value = h.id;
-        opt.textContent = `${h.label} (${h.category})`;
-        frag.appendChild(opt);
+        frag.appendChild(el("option", { value: h.id }, `${h.label} (${h.category})`));
       }
       selectEl.replaceChildren(frag);
       selectEl.value = hazards[0].id;
     }
 
-    renderAccessibleTable(tbodyEl, hazards);
+    renderTableRows(
+      tbodyEl,
+      hazards.map((h) => {
+        const s1 = h.scenarios[firstSc.key];
+        const s2 = h.scenarios[midSc.key];
+        const s3 = h.scenarios[lastSc.key];
+        const delta = s3.pct - s1.pct;
+        return [
+          h.label,
+          h.threshold_label,
+          `${s1.pct.toFixed(1)}% (${s1.cities})`,
+          `${s2.pct.toFixed(1)}% (${s2.cities})`,
+          `${s3.pct.toFixed(1)}% (${s3.cities})`,
+          `${delta > 0 ? "+" : ""}${delta.toFixed(1)} pp`,
+        ];
+      })
+    );
 
     function renderHazard(hazardId) {
       const hazard = hazards.find((h) => h.id === hazardId) || hazards[0];
-      const s15 = hazard.scenarios["1.5C"];
-      const s20 = hazard.scenarios["2.0C"];
-      const s30 = hazard.scenarios["3.0C"];
+      const s1 = hazard.scenarios[firstSc.key];
+      const s2 = hazard.scenarios[midSc.key];
+      const s3 = hazard.scenarios[lastSc.key];
 
       if (thresholdNoteEl) {
         thresholdNoteEl.textContent = `Extreme threshold: ${hazard.threshold_label}`;
       }
 
-      const row = document.createElement("div");
-      row.className = "waffle-row";
+      const row = el("div", { className: "waffle-row" });
 
-      SCENARIO_META.forEach((meta, idx) => {
+      CONFIG.scenarios.forEach((meta, idx) => {
         const sc = hazard.scenarios[meta.key];
-        const panel = document.createElement("div");
-        panel.className = "waffle-panel";
+        const ariaLabel = `${meta.label} global warming: ${sc.pct.toFixed(1)}% (${sc.cities} of ${sc.valid_cities} major cities, ${formatPopulation(sc.pop_millions)}) exceed ${hazard.threshold_label}.`;
 
-        const header = document.createElement("div");
-        header.className = "waffle-panel-header";
-
-        const scenarioTag = document.createElement("div");
-        scenarioTag.className = "waffle-scenario-tag";
-        scenarioTag.textContent = `${meta.label} warming`;
-
-        const pctValue = document.createElement("div");
-        pctValue.className = "waffle-pct";
-        pctValue.style.color = meta.textColor;
-        pctValue.textContent = `${sc.cells}%`;
-
-        const detail = document.createElement("div");
-        detail.className = "waffle-detail";
-        detail.textContent = `${sc.cities} of ${sc.valid_cities} cities · ${formatPop(sc.pop_millions)}`;
-
-        header.append(scenarioTag, pctValue, detail);
-
-        const ariaLabel = `${meta.label} global warming: ${sc.pct.toFixed(1)}% (${sc.cities} of ${sc.valid_cities} major cities, ${formatPop(sc.pop_millions)}) exceed ${hazard.threshold_label}.`;
-        const svg = buildWaffleSvg(sc.cells, meta.color, ariaLabel);
-
-        panel.append(header, svg);
+        const panel = el(
+          "div",
+          { className: "waffle-panel" },
+          el(
+            "div",
+            { className: "waffle-panel-header" },
+            el("div", { className: "waffle-scenario-tag" }, `${meta.label} warming`),
+            el("div", { className: "waffle-pct", style: { color: meta.textColor } }, `${sc.cells}%`),
+            el("div", { className: "waffle-detail" }, `${sc.cities} of ${sc.valid_cities} cities · ${formatPopulation(sc.pop_millions)}`)
+          ),
+          buildWaffleSvg(sc.cells, meta.color, ariaLabel)
+        );
         row.appendChild(panel);
 
-        if (idx < SCENARIO_META.length - 1) {
-          const arrow = document.createElement("div");
-          arrow.className = "waffle-arrow";
-          arrow.setAttribute("aria-hidden", "true");
-          arrow.textContent = "→";
-          row.appendChild(arrow);
+        if (idx < CONFIG.scenarios.length - 1) {
+          row.appendChild(el("div", { className: "waffle-arrow", "aria-hidden": "true" }, "→"));
         }
       });
 
-      const deltaPp = s30.pct - s15.pct;
+      const deltaPp = s3.pct - s1.pct;
       const deltaSign = deltaPp > 0 ? "+" : "";
-      const footer = document.createElement("div");
-      footer.className = "waffle-legend";
-      footer.innerHTML =
-        `<span class="waffle-legend-item"><span class="waffle-swatch" style="background:#D55E00" aria-hidden="true"></span>1 square = 1% of cities exceeding threshold</span>` +
-        `<span class="waffle-legend-item"><span class="waffle-swatch" style="background:${EMPTY_CELL_COLOR}" aria-hidden="true"></span>Below threshold</span>` +
-        `<span class="waffle-legend-delta">+1.5°C → +3.0°C: <strong>${deltaSign}${deltaPp.toFixed(1)} pp</strong> (${s15.cities} → ${s30.cities} cities)</span>`;
+
+      const footer = el(
+        "div",
+        { className: "waffle-legend" },
+        el(
+          "span",
+          { className: "waffle-legend-item" },
+          el("span", { className: "waffle-swatch", style: { backgroundColor: midSc.color }, "aria-hidden": "true" }),
+          "1 square = 1% of cities exceeding threshold"
+        ),
+        el(
+          "span",
+          { className: "waffle-legend-item" },
+          el("span", { className: "waffle-swatch", style: { backgroundColor: CONFIG.grid.emptyColor }, "aria-hidden": "true" }),
+          "Below threshold"
+        ),
+        el(
+          "span",
+          { className: "waffle-legend-delta" },
+          `${firstSc.label} → ${lastSc.label}: `,
+          el("strong", null, `${deltaSign}${deltaPp.toFixed(1)} pp`),
+          ` (${s1.cities} → ${s3.cities} cities)`
+        )
+      );
 
       plotEl.replaceChildren(row, footer);
 
       if (captionEl) {
-        captionEl.textContent = `${hazard.label} (${hazard.threshold_label}): rises from ${s15.pct.toFixed(1)}% of major cities at +1.5°C (${s15.cities} cities) to ${s20.pct.toFixed(1)}% at +2.0°C (${s20.cities} cities) and ${s30.pct.toFixed(1)}% at +3.0°C (${s30.cities} cities).`;
+        captionEl.textContent = `${hazard.label} (${hazard.threshold_label}): rises from ${s1.pct.toFixed(1)}% of major cities at ${firstSc.label} (${s1.cities} cities) to ${s2.pct.toFixed(1)}% at ${midSc.label} (${s2.cities} cities) and ${s3.pct.toFixed(1)}% at ${lastSc.label} (${s3.cities} cities).`;
       }
-
       if (statusEl) {
-        statusEl.textContent = `Updated waffle chart to ${hazard.label}: ${s15.cells}% at +1.5°C, ${s20.cells}% at +2.0°C, and ${s30.cells}% at +3.0°C.`;
+        statusEl.textContent = `Updated waffle chart to ${hazard.label}: ${s1.cells}% at ${firstSc.label}, ${s2.cells}% at ${midSc.label}, and ${s3.cells}% at ${lastSc.label}.`;
       }
     }
 
     renderHazard(hazards[0].id);
-
-    if (selectEl) {
-      selectEl.addEventListener("change", (e) => {
-        renderHazard(e.target.value);
-      });
-    }
+    selectEl?.addEventListener("change", (e) => renderHazard(e.target.value));
   }
 
   document.addEventListener("DOMContentLoaded", initWaffle);

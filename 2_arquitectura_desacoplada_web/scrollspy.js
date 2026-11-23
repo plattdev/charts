@@ -1,18 +1,17 @@
 /**
  * Chart Index Scrollspy Module:
- * Synchronizes aria-current with CSS :target-current when scroll-target-group
- * is natively supported, and falls back to IntersectionObserver otherwise.
+ * Synchronizes aria-current with CSS :target-current when native CSS
+ * scroll-target-group is supported, and falls back to IntersectionObserver otherwise.
  */
 
 (() => {
+  "use strict";
+
   function initChartIndexScrollspy() {
     const nav = document.querySelector(".chart-index-nav");
     if (!nav) return;
 
-    const links = Array.from(nav.querySelectorAll('a[href^="#"]'));
-    if (links.length === 0) return;
-
-    const sectionEntries = links
+    const sectionEntries = Array.from(nav.querySelectorAll('a[href^="#"]'))
       .map((link) => {
         const id = link.getAttribute("href").slice(1);
         const section = id ? document.getElementById(id) : null;
@@ -38,19 +37,15 @@
 
     if (CSS.supports("scroll-target-group: auto")) {
       const syncAriaCurrent = () => {
-        const currentLink = nav.querySelector("a:target-current");
-        setAriaCurrent(currentLink);
+        setAriaCurrent(nav.querySelector("a:target-current"));
       };
 
       syncAriaCurrent();
-      document.addEventListener("scrollend", syncAriaCurrent);
-      window.addEventListener("hashchange", () => {
-        requestAnimationFrame(syncAriaCurrent);
-      });
+      document.addEventListener("scrollend", syncAriaCurrent, { passive: true });
+      window.addEventListener("hashchange", () => requestAnimationFrame(syncAriaCurrent));
       return;
     }
 
-    // Fallback for browsers without scroll-target-group (Firefox, Safari, older browsers)
     const initialHashId = window.location.hash.slice(1);
     const initialMatch = sectionEntries.find((entry) => entry.id === initialHashId);
     setFallbackActive(initialMatch ? initialMatch.id : sectionEntries[0].id);
@@ -66,14 +61,9 @@
       { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
     );
 
-    for (const { section } of sectionEntries) {
+    for (const { id, link, section } of sectionEntries) {
       observer.observe(section);
-    }
-
-    for (const { id, link } of sectionEntries) {
-      link.addEventListener("click", () => {
-        setFallbackActive(id);
-      });
+      link.addEventListener("click", () => setFallbackActive(id));
     }
   }
 
