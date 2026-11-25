@@ -187,11 +187,11 @@
       const { mode } = state;
       const stacks = computeStacks(mode);
 
-      const width = 940;
+      const width = 1090;
       const height = 430;
       const padLeft = mode === "stream" ? 26 : 58;
-      const padRight = 26;
-      const padTop = 24;
+      const padRight = 186;
+      const padTop = 28;
       const padBottom = 42;
       const plotW = width - padLeft - padRight;
       const plotH = height - padTop - padBottom;
@@ -239,7 +239,7 @@
             {
               x,
               y: height - padBottom + 22,
-              "text-anchor": yr === minYear ? "start" : yr === maxYear ? "end" : "middle",
+              "text-anchor": yr === minYear ? "start" : "middle",
               class: "stream-axis-label",
             },
             yr
@@ -281,7 +281,10 @@
 
       const layersGroup = svgEl("g");
       const labelsGroup = svgEl("g", { "pointer-events": "none" });
+      const calloutsGroup = svgEl("g");
       const pathEls = new Map();
+      const calloutEls = new Map();
+      const pendingCallouts = [];
 
       stacks.forEach(({ stream, points }) => {
         const topPts = points.map((p) => ({ x: xScale(p.year), y: yScale(p.y1) }));
@@ -325,8 +328,85 @@
               stream.label
             )
           );
+        } else {
+          let anchorIdx = points.length - 1;
+          while (anchorIdx > 0 && points[anchorIdx].val <= 0) {
+            anchorIdx--;
+          }
+          const anchorPt = points[anchorIdx];
+          if (anchorPt && anchorPt.val > 0) {
+            pendingCallouts.push({
+              stream,
+              anchorX: xScale(anchorPt.year),
+              anchorY: (yScale(anchorPt.y0) + yScale(anchorPt.y1)) / 2,
+            });
+          }
         }
       });
+
+      if (pendingCallouts.length > 0) {
+        pendingCallouts.sort((a, b) => a.anchorY - b.anchorY);
+        const minSpacing = 18;
+        const minY = 16;
+        const maxY = height - padBottom - 8;
+        const labelYs = pendingCallouts.map((c) => c.anchorY);
+
+        for (let i = 1; i < labelYs.length; i++) {
+          if (labelYs[i] - labelYs[i - 1] < minSpacing) {
+            labelYs[i] = labelYs[i - 1] + minSpacing;
+          }
+        }
+        if (labelYs[labelYs.length - 1] > maxY) {
+          labelYs[labelYs.length - 1] = maxY;
+          for (let i = labelYs.length - 2; i >= 0; i--) {
+            if (labelYs[i + 1] - labelYs[i] < minSpacing) {
+              labelYs[i] = labelYs[i + 1] - minSpacing;
+            }
+          }
+        }
+        if (labelYs[0] < minY) {
+          labelYs[0] = minY;
+          for (let i = 1; i < labelYs.length; i++) {
+            if (labelYs[i] - labelYs[i - 1] < minSpacing) {
+              labelYs[i] = labelYs[i - 1] + minSpacing;
+            }
+          }
+        }
+
+        const xEdge = width - padRight;
+        pendingCallouts.forEach(({ stream, anchorX, anchorY }, idx) => {
+          const ly = labelYs[idx];
+          const elbowX = xEdge + 10;
+          const endX = xEdge + 17;
+          const group = svgEl("g", { class: "stream-callout-group" });
+          group.append(
+            svgEl("path", {
+              d: `M ${(anchorX + 1.5).toFixed(1)},${anchorY.toFixed(1)} L ${elbowX.toFixed(1)},${ly.toFixed(1)} L ${endX.toFixed(1)},${ly.toFixed(1)}`,
+              fill: "none",
+              stroke: stream.color,
+              "stroke-width": 1.35,
+            }),
+            svgEl("circle", {
+              cx: (anchorX + 1.5).toFixed(1),
+              cy: anchorY.toFixed(1),
+              r: 2.2,
+              fill: stream.color,
+            }),
+            svgEl(
+              "text",
+              {
+                x: endX + 5,
+                y: ly + 4,
+                "text-anchor": "start",
+                class: "stream-callout-label",
+              },
+              stream.label
+            )
+          );
+          calloutsGroup.appendChild(group);
+          calloutEls.set(stream.key, group);
+        });
+      }
 
       const crosshair = svgEl("line", {
         x1: padLeft,
@@ -349,7 +429,7 @@
         class: "stream-overlay",
       });
 
-      svg.append(layersGroup, labelsGroup, crosshair, overlay);
+      svg.append(layersGroup, labelsGroup, crosshair, overlay, calloutsGroup);
 
       const tooltip = el("div", { className: "chart-tooltip stream-tooltip", hidden: true });
       const legend = el("div", { className: "stream-legend" });
@@ -363,7 +443,16 @@
           btn.classList.toggle("is-dimmed", Boolean(key && k !== key));
           btn.classList.toggle("is-active", k === key);
         });
+        calloutEls.forEach((g, k) => {
+          g.classList.toggle("is-dimmed", Boolean(key && k !== key));
+          g.classList.toggle("is-active", k === key);
+        });
       }
+
+      calloutEls.forEach((g, key) => {
+        g.addEventListener("mouseenter", () => applyHighlight(key));
+        g.addEventListener("mouseleave", () => applyHighlight(null));
+      });
 
       function updateScrubber(clientX, clientY) {
         const rect = svg.getBoundingClientRect();

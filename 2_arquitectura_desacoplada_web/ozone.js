@@ -44,9 +44,6 @@
       caption: "ozone-caption",
       status: "ozone-status",
       tableBody: "ozone-table-body",
-      customWrap: "ozone-custom-years",
-      leftSelect: "ozone-left-year",
-      rightSelect: "ozone-right-year",
       modeRadioName: "ozone-mode",
     },
     scale: {
@@ -96,21 +93,12 @@
     };
   }
 
-  function resolveComparison(records, mode, customLeftYear, customRightYear) {
+  function resolveComparison(records, mode) {
     const byYear = new Map(records.map((r) => [r.year, r]));
     const { defaultLeftYear, defaultRightYear } = CONFIG.scale;
-
-    if (mode === "peak-vs-2025") {
-      const left = byYear.get(defaultLeftYear);
-      const right = byYear.get(defaultRightYear);
-      return {
-        left: { title: String(defaultLeftYear), area: left.area, minOzone: left.min_ozone },
-        right: { title: String(defaultRightYear), area: right.area, minOzone: right.min_ozone },
-      };
-    }
+    const left = byYear.get(defaultLeftYear);
 
     if (mode === "peak-vs-5yr") {
-      const left = byYear.get(defaultLeftYear);
       const avg5 = averageRange(records, 2021, 2025);
       return {
         left: { title: String(defaultLeftYear), area: left.area, minOzone: left.min_ozone },
@@ -118,20 +106,10 @@
       };
     }
 
-    if (mode === "decades") {
-      const avg2000s = averageRange(records, 2000, 2009);
-      const avgRecent = averageRange(records, 2016, 2025);
-      return {
-        left: { title: "2000–2009", area: avg2000s.area, minOzone: avg2000s.min_ozone },
-        right: { title: "2016–2025", area: avgRecent.area, minOzone: avgRecent.min_ozone },
-      };
-    }
-
-    const leftRec = byYear.get(Number(customLeftYear)) || byYear.get(defaultLeftYear);
-    const rightRec = byYear.get(Number(customRightYear)) || byYear.get(defaultRightYear);
+    const right = byYear.get(defaultRightYear);
     return {
-      left: { title: String(leftRec.year), area: leftRec.area, minOzone: leftRec.min_ozone },
-      right: { title: String(rightRec.year), area: rightRec.area, minOzone: rightRec.min_ozone },
+      left: { title: String(defaultLeftYear), area: left.area, minOzone: left.min_ozone },
+      right: { title: String(defaultRightYear), area: right.area, minOzone: right.min_ozone },
     };
   }
 
@@ -315,22 +293,6 @@
     containerEl.replaceChildren(svg);
   }
 
-  function populateYearSelects(leftSelect, rightSelect, records) {
-    if (!leftSelect || !rightSelect) return;
-    const sortedDesc = [...records].sort((a, b) => b.year - a.year);
-    const buildOptions = (selectedYear) => {
-      const frag = document.createDocumentFragment();
-      for (const r of sortedDesc) {
-        frag.appendChild(
-          el("option", { value: r.year, selected: r.year === selectedYear }, `${r.year} (${CONFIG.formatArea(r.area)})`)
-        );
-      }
-      return frag;
-    };
-    leftSelect.replaceChildren(buildOptions(CONFIG.scale.defaultLeftYear));
-    rightSelect.replaceChildren(buildOptions(CONFIG.scale.defaultRightYear));
-  }
-
   async function initOzoneChart() {
     const plotEl = document.getElementById(CONFIG.ids.plot);
     if (!plotEl) return;
@@ -339,9 +301,6 @@
     const statusEl = document.getElementById(CONFIG.ids.status);
     const tableBodyEl = document.getElementById(CONFIG.ids.tableBody);
     const modeInputs = document.querySelectorAll(`input[name="${CONFIG.ids.modeRadioName}"]`);
-    const customWrapEl = document.getElementById(CONFIG.ids.customWrap);
-    const leftSelect = document.getElementById(CONFIG.ids.leftSelect);
-    const rightSelect = document.getElementById(CONFIG.ids.rightSelect);
 
     let dataset;
     try {
@@ -353,7 +312,6 @@
     }
 
     const { records } = dataset;
-    populateYearSelects(leftSelect, rightSelect, records);
 
     if (tableBodyEl) {
       renderTableRows(
@@ -372,14 +330,7 @@
     let currentMode = "peak-vs-2025";
 
     function updateView(announce = false) {
-      if (customWrapEl) customWrapEl.hidden = currentMode !== "custom";
-
-      const comparison = resolveComparison(
-        records,
-        currentMode,
-        leftSelect?.value ?? CONFIG.scale.defaultLeftYear,
-        rightSelect?.value ?? CONFIG.scale.defaultRightYear
-      );
+      const comparison = resolveComparison(records, currentMode);
 
       renderOzoneSvg(plotEl, comparison);
 
@@ -387,7 +338,7 @@
       const pct = comparison.left.area > 0 ? (delta / comparison.left.area) * 100 : 0;
 
       if (captionEl) {
-        captionEl.textContent = `Center-aligned semicircles scaled strictly by area (r ∝ √area) comparing ${comparison.left.title} (${CONFIG.formatArea(comparison.left.area)}) against ${comparison.right.title} (${CONFIG.formatArea(comparison.right.area)}). Dashed ring: ${CONFIG.scale.referenceLabel}. Center dot: ${CONFIG.scale.baselineLabel}.`;
+        captionEl.textContent = `Center-aligned semicircles scaled by area (r ∝ √area) comparing ${comparison.left.title} (${CONFIG.formatArea(comparison.left.area)}) against ${comparison.right.title} (${CONFIG.formatArea(comparison.right.area)}). Dashed ring: ${CONFIG.scale.referenceLabel}. Center dot: ${CONFIG.scale.baselineLabel}.`;
       }
       if (announce && statusEl) {
         statusEl.textContent = `Showing ${comparison.left.title} (${CONFIG.formatArea(comparison.left.area)}) versus ${comparison.right.title} (${CONFIG.formatArea(comparison.right.area)}), a ${pct >= 0 ? "+" : ""}${pct.toFixed(1)}% area difference.`;
@@ -404,9 +355,6 @@
         }
       });
     });
-
-    leftSelect?.addEventListener("change", () => updateView(true));
-    rightSelect?.addEventListener("change", () => updateView(true));
   }
 
   document.addEventListener("DOMContentLoaded", initOzoneChart);

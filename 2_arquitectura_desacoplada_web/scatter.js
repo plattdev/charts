@@ -61,8 +61,8 @@
     entityName: { singular: "country", plural: "countries" },
     urlParam: "countries",
     axes: {
-      xTitle: "Sustainable Development Index Score (SDI_work, 0–100)",
-      yTitle: "World Happiness Score (3-Year Avg, 0–10)",
+      xTitle: "Sustainable Development Index Score",
+      yTitle: "World Happiness Score (3-Year Average)",
       colorbarTitle: "GDP per capita<br>PPP ($)",
       colorbarPrefix: "$",
     },
@@ -82,7 +82,7 @@
       d.whr_rank,
     ],
     hoverTemplate:
-      "<b>%{customdata[0]}</b> (WHR Rank #%{customdata[3]})<br>" +
+      "<b>%{customdata[0]}</b> (World Happiness Rank #%{customdata[3]})<br>" +
       "SDI Score: %{x:.2f} / 100<br>" +
       "Happiness (3-yr avg): %{y:.2f} / 10<br>" +
       "GDP per capita (PPP, %{customdata[2]}): $%{customdata[1]}" +
@@ -121,7 +121,7 @@
       mode: "markers",
       hovertemplate: CONFIG.hoverTemplate,
       marker: {
-        // Diameter proportional to sqrt(size) => visual area (pi * r^2) strictly proportional to value
+        // Diameter proportional to sqrt(size) => visual area (pi * r^2) proportional to value
         size: sorted.map((d) => (d[fields.sqrtSize] ?? Math.sqrt(Math.max(0, d[fields.size]))) * style.bubbleScale),
         sizemode: "diameter",
         color: sorted.map((d) => d[fields.size]),
