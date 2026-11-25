@@ -141,23 +141,25 @@
       selectEl.value = hazards[0].id;
     }
 
-    renderTableRows(
-      tbodyEl,
-      hazards.map((h) => {
-        const s1 = h.scenarios[firstSc.key];
-        const s2 = h.scenarios[midSc.key];
-        const s3 = h.scenarios[lastSc.key];
-        const delta = s3.pct - s1.pct;
-        return [
-          h.label,
-          h.threshold_label,
-          `${s1.pct.toFixed(1)}% (${s1.cities})`,
-          `${s2.pct.toFixed(1)}% (${s2.cities})`,
-          `${s3.pct.toFixed(1)}% (${s3.cities})`,
-          `${delta > 0 ? "+" : ""}${delta.toFixed(1)} pp`,
-        ];
-      })
-    );
+    if (tbodyEl) {
+      renderTableRows(
+        tbodyEl,
+        hazards.map((h) => {
+          const s1 = h.scenarios[firstSc.key];
+          const s2 = h.scenarios[midSc.key];
+          const s3 = h.scenarios[lastSc.key];
+          const delta = s3.pct - s1.pct;
+          return [
+            h.label,
+            h.threshold_label,
+            `${s1.pct.toFixed(1)}% (${s1.cities})`,
+            `${s2.pct.toFixed(1)}% (${s2.cities})`,
+            `${s3.pct.toFixed(1)}% (${s3.cities})`,
+            `${delta > 0 ? "+" : ""}${delta.toFixed(1)} pp`,
+          ];
+        })
+      );
+    }
 
     function renderHazard(hazardId) {
       const hazard = hazards.find((h) => h.id === hazardId) || hazards[0];

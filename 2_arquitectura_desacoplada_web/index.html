@@ -25,17 +25,16 @@
   <script src="scrollspy.js?v=2026" defer></script>
 </head>
 <body>
-  <header class="portfolio-header">
-    <div class="portfolio-header-inner">
-      <h1 class="portfolio-title">Scroll or select a selection of charts created with Open data</h1>
-      <p class="portfolio-lead">
-        Curated interactive views, distributions, and multi-dimensional flows built with public open data to explore global development, health equity, sustainability, and climate hazards.
-      </p>
-    </div>
-  </header>
-
   <div class="container">
-    <header class="index-bar">
+    <header class="portfolio-header">
+      <p class="portfolio-kicker">Open Data · Visual Encoding Exploration</p>
+      <h1 class="portfolio-title">Matching Chart Geometry to What the Data Says</h1>
+      <p class="portfolio-lead">
+        Each public dataset has its own shape—multivariate trade-offs, regional distributions, 50-year transitions, physical areas, threshold shares, or multi-stage flows. Rather than forcing one standard template, I experimented with selecting a different chart type for each dataset depending on the structure of its numbers and the question it answers.
+      </p>
+    </header>
+
+    <div class="index-bar">
       <div class="index-bar-inner">
         <div class="index-brand">
           <span class="index-heading">Chart Index</span>
@@ -146,7 +145,7 @@
           </ol>
         </nav>
       </div>
-    </header>
+    </div>
 
     <main>
       <!-- ====================================================================
@@ -158,42 +157,46 @@
         <header class="section-header">
           <h2 id="scatter-title" class="page-title">SCATTER PLOT</h2>
           <p class="section-question">Which countries convert their economic resources into actual human well-being and sustainability?</p>
-          <div class="header-subbar">
-            <p class="page-subtitle">
-              Comparing 140 nations across <strong>Sustainable Development</strong>, <strong>World Happiness</strong>, and <strong>GDP per capita (PPP)</strong>.
-            </p>
-
-            <search class="search-spotlight-area">
-              <form id="country-filter-form" class="filter-form" action="." method="GET">
-                <div class="search-input-group">
-                  <span class="search-icon-slot" aria-hidden="true">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                  </span>
-                  <input
-                    id="country-search"
-                    name="countries"
-                    class="search-input"
-                    type="search"
-                    list="country-list"
-                    placeholder="(e.g. Costa Rica, Finland...)"
-                    autocorrect="off"
-                    autocapitalize="off"
-                    spellcheck="false"
-                    enterkeyhint="search"
-                  >
-                  <datalist id="country-list"></datalist>
-                  <button id="clear-search" class="btn-reset" type="button" aria-label="Reset highlight filter">
-                    Reset
-                  </button>
-                </div>
-                <p id="search-status" class="visually-hidden" aria-live="polite"></p>
-              </form>
-            </search>
-          </div>
+          <p class="page-subtitle">
+            Comparing 140 nations across <strong>Sustainable Development</strong>, <strong>World Happiness</strong>, and <strong>GDP per capita (PPP)</strong>.
+          </p>
+          <p class="dataset-takeaway">
+            <strong>What the data shows:</strong> Mid-income nations such as Costa Rica achieve top-tier happiness (7.44/10) and strong SDG progress (73.6/100) at a fraction of high-income GDP, showing that beyond ~$30k PPP per capita, extra wealth yields diminishing returns in human well-being.
+          </p>
         </header>
+
+        <div class="chart-controls">
+          <search class="control-group search-spotlight-area">
+            <label for="country-search" class="control-legend">Highlight Countries</label>
+            <form id="country-filter-form" class="filter-form" action="." method="GET">
+              <div class="search-input-group">
+                <span class="search-icon-slot" aria-hidden="true">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input
+                  id="country-search"
+                  name="countries"
+                  class="search-input"
+                  type="search"
+                  list="country-list"
+                  placeholder="e.g. Costa Rica, Finland, Spain..."
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  enterkeyhint="search"
+                >
+                <datalist id="country-list"></datalist>
+                <button id="clear-search" class="btn-reset" type="button" aria-label="Reset highlight filter">
+                  Reset
+                </button>
+              </div>
+              <p id="search-status" class="visually-hidden" aria-live="polite"></p>
+            </form>
+          </search>
+        </div>
 
         <figure class="viz-figure">
           <div
@@ -210,23 +213,13 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">About This Visualization &amp; Methodology</span>
+              <span class="section-heading">Methodology</span>
             </summary>
 
             <div class="notion-toggle-content">
-              <p class="section-lead">
-                <strong>Core Question:</strong> Which countries are highly efficient at converting their economic resources into actual human well-being and sustainability, and which wealthy nations are underperforming?
-              </p>
-
               <div class="editorial-notes">
                 <p>
-                  <strong>X-Axis: Sustainable Development Index (0–100):</strong> Normalized score measuring progress across all 17 UN Sustainable Development Goals (SDGs) from the <em>Sustainable Development Report</em>.
-                </p>
-                <p>
-                  <strong>Y-Axis: World Happiness Index (0–10):</strong> National subjective well-being averaged over 3 survey years (2022–2024) from the <em>World Happiness Report</em>.
-                </p>
-                <p>
-                  <strong>Bubble Area: GDP per Capita (PPP 2021 $):</strong> Purchasing Power Parity at constant 2021 international dollars, square-root scaled so bubble surface accurately conveys wealth volume.
+                  Records are harmonized across 140 countries with complete coverage in all three international datasets. Subjective well-being uses the <em>World Happiness Report</em> Cantril ladder 3-year rolling average (2022–2024) to reduce annual survey sampling noise; sustainability uses the normalized <em>Sustainable Development Report</em> index across all 17 UN SDGs; and economic output uses the latest available World Bank GDP per capita adjusted for Purchasing Power Parity in constant 2021 international dollars, with marker radii scaled by square root (<code>r ∝ √GDP</code>) so circle area stays proportional to wealth.
                 </p>
               </div>
 
@@ -235,17 +228,17 @@
                 <ul class="sources-list">
                   <li>
                     <a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener noreferrer">
-                      World Bank (GDP per capita)
+                      World Bank (GDP per capita, PPP)
                     </a>
                   </li>
                   <li>
                     <a href="https://dashboards.sdgindex.org/downloads/" target="_blank" rel="noopener noreferrer">
-                      Sustainable Development Report 2026 – Data Explorer &amp; Downloads
+                      Sustainable Development Report 2026
                     </a>
                   </li>
                   <li>
                     <a href="https://www.worldhappiness.report/data-sharing/" target="_blank" rel="noopener noreferrer">
-                      World Happiness Report – Data Sharing
+                      World Happiness Report
                     </a>
                   </li>
                 </ul>
@@ -259,8 +252,7 @@
            TEMPLATE 2/6: GROUPED BEESWARM PLOT (beeswarm.js)
            Required DOM IDs: #beeswarm-plot, #beeswarm-year-group, #beeswarm-year,
                              #beeswarm-filter-form, #beeswarm-search, #beeswarm-country-list,
-                             #beeswarm-clear-search, #beeswarm-caption, #beeswarm-status,
-                             #beeswarm-table-body
+                             #beeswarm-clear-search, #beeswarm-caption, #beeswarm-status
            ==================================================================== -->
       <section id="beeswarm" class="chart-section" aria-labelledby="beeswarm-title" tabindex="-1">
         <header class="section-header">
@@ -270,6 +262,9 @@
           </p>
           <p class="page-subtitle">
             Comparing <strong>185 countries &amp; territories</strong> across 6 WHO regions from <strong>2000 to 2023</strong> (latest official WHO Global Health Estimates).
+          </p>
+          <p class="dataset-takeaway">
+            <strong>What the data shows:</strong> Global healthy life expectancy climbed by 4.9 years from 2000 to 2023 (from 57.9 to 62.8 years, rebounding after the 2021 pandemic dip), yet a ~14-year gap still separates the highest- and lowest-performing WHO regions.
           </p>
         </header>
 
@@ -363,54 +358,13 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">Accessible Data Table (185 Countries &amp; Territories, 2000–2023)</span>
+              <span class="section-heading">Methodology</span>
             </summary>
 
             <div class="notion-toggle-content">
-              <div class="table-scroll-container" role="region" aria-labelledby="hale-table-caption" tabindex="0">
-                <table class="data-table">
-                  <caption id="hale-table-caption">
-                    WHO Healthy Life Expectancy (HALE) at birth in years (2000 and 2023) and percentage change by country/territory and WHO region (Source: WHO Global Health Observatory, WHOSIS_000002).
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Country / Territory</th>
-                      <th scope="col">WHO Region</th>
-                      <th scope="col">Both Sexes 2000 (yrs)</th>
-                      <th scope="col">Both Sexes 2023 (yrs)</th>
-                      <th scope="col">2000–2023 % Change</th>
-                      <th scope="col">Female 2023 (yrs)</th>
-                      <th scope="col">Male 2023 (yrs)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="beeswarm-table-body"></tbody>
-                </table>
-              </div>
-            </div>
-          </details>
-
-          <details class="notion-toggle">
-            <summary class="notion-toggle-summary">
-              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              <span class="section-heading">About This Beeswarm Plot &amp; Methodology</span>
-            </summary>
-
-            <div class="notion-toggle-content">
-              <p class="section-lead">
-                <strong>What is HALE?</strong> Healthy Life Expectancy (HALE) at birth measures the average number of years a newborn is expected to live in <em>full health</em>, subtracting years lived with disability or ill health from overall life expectancy.
-              </p>
-
               <div class="editorial-notes">
                 <p>
-                  <strong>6 WHO Regions (Colorblind-Safe Palette):</strong> Countries and territories are grouped into their official World Health Organization regions using the Okabe-Ito colorblind-safe palette. Diamonds mark the official aggregate regional average.
-                </p>
-                <p>
-                  <strong>Collision-Free Beeswarm:</strong> Each dot’s horizontal coordinate shows its exact value, while vertical offsets are calculated via circle-tangent packing so high-density peaks spread without overlapping.
-                </p>
-                <p>
-                  <strong>2000–2023 Recovery:</strong> Worldwide, healthy life expectancy improved by +4.9 years from 57.9 years in 2000 to 62.8 years in 2023, recovering steadily from the 2021 pandemic dip (61.4 years).
+                  Healthy Life Expectancy (HALE) at birth is estimated via the WHO Global Health Estimates Sullivan method, combining standard abridged life tables with age- and sex-specific disability prevalence weights from the Global Burden of Disease study across 185 member states (2000–2023). Regional diamonds reflect official WHO population-weighted aggregates, while country dots retain exact values and resolve density collisions via deterministic circle-tangent packing.
                 </p>
               </div>
 
@@ -419,12 +373,12 @@
                 <ul class="sources-list">
                   <li>
                     <a href="https://data.who.int/indicators/i/C64284D" target="_blank" rel="noopener noreferrer">
-                      World Health Organization (WHO) — data.who.int (HALE at birth, WHOSIS_000002)
+                      WHO — HALE at birth (WHOSIS_000002)
                     </a>
                   </li>
                   <li>
                     <a href="https://ghoapi.azureedge.net/api/WHOSIS_000002" target="_blank" rel="noopener noreferrer">
-                      WHO Global Health Observatory OData API (2000–2023)
+                      WHO Global Health Observatory OData API
                     </a>
                   </li>
                 </ul>
@@ -437,7 +391,7 @@
       <!-- ====================================================================
            TEMPLATE 3/6: MONOTONE CUBIC STREAMGRAPH (streamgraph.js)
            Required DOM IDs: #streamgraph-plot, #streamgraph-caption,
-                             #streamgraph-status, #streamgraph-table-body
+                             #streamgraph-status
            ==================================================================== -->
       <section id="streamgraph" class="chart-section" aria-labelledby="streamgraph-title" tabindex="-1">
         <header class="section-header">
@@ -447,6 +401,9 @@
           </p>
           <p class="page-subtitle">
             Continuous 50-year evolution of <strong>Swedish municipal waste (1975–2025)</strong> across <strong>6 treatment pathways</strong> in metric tonnes (Source: <cite>Avfall Sverige</cite>).
+          </p>
+          <p class="dataset-takeaway">
+            <strong>What the data shows:</strong> Between 1975 and 2025, Sweden slashed municipal landfilling from 62.3% (1.62M tonnes) down to just 1.5% (67k tonnes) by steadily expanding energy recovery, material recycling, and biological treatment.
           </p>
         </header>
 
@@ -485,55 +442,13 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">Accessible Data Table (36 Annual Records, 1975–2025)</span>
+              <span class="section-heading">Methodology</span>
             </summary>
 
             <div class="notion-toggle-content">
-              <div class="table-scroll-container" role="region" aria-labelledby="waste-table-caption" tabindex="0">
-                <table class="data-table">
-                  <caption id="waste-table-caption">
-                    Swedish municipal waste annual treatment volumes in metric tonnes (1975–2025) (Source: Avfall Sverige).
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Year</th>
-                      <th scope="col">Material Recycling</th>
-                      <th scope="col">Biological Treatment</th>
-                      <th scope="col">Energy Recovery</th>
-                      <th scope="col">Landfill</th>
-                      <th scope="col">Prepared for Reuse</th>
-                      <th scope="col">Construction Recycling</th>
-                      <th scope="col">Total (t)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="streamgraph-table-body"></tbody>
-                </table>
-              </div>
-            </div>
-          </details>
-
-          <details class="notion-toggle">
-            <summary class="notion-toggle-summary">
-              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              <span class="section-heading">About This Streamgraph &amp; Methodology</span>
-            </summary>
-
-            <div class="notion-toggle-content">
-              <p class="section-lead">
-                <strong>50 Years of Waste Transition:</strong> Between 1975 and 2025, Sweden reduced municipal landfill from <strong>1.62M tonnes (62.3%)</strong> to <strong>67,370 tonnes (1.5%)</strong> while scaling energy recovery, material recycling, and biological treatment.
-              </p>
-
               <div class="editorial-notes">
                 <p>
-                  <strong>Why a Streamgraph?</strong> Unlike discrete year-to-category diagrams, a continuous streamgraph preserves the chronological time axis (1975–2025) and lets readers visually trace how each treatment pathway expands or contracts over five decades.
-                </p>
-                <p>
-                  <strong>Monotone Cubic Curves &amp; Colorblind-Safe Palette:</strong> Band edges are interpolated using Fritsch-Carlson monotone cubic splines (preventing artificial overshoots) and colored with an Okabe-Ito-harmonized palette. Hover any band or legend item to isolate a single pathway.
-                </p>
-                <p>
-                  <strong>Three Baselines:</strong> Switch between the centered <strong>Streamgraph</strong> (default), <strong>100% Share</strong> to compare relative composition, or <strong>Stacked Area</strong> to read exact total tonnage from a flat zero baseline.
+                  Historical records from <em>Avfall Sverige</em> (1975–2025) are harmonized in metric tonnes across six standardized municipal waste treatment categories, combining five-year benchmark intervals prior to 1995 with annual series thereafter. Stacked series are computed under centered silhouette, 100% proportional, or zero-baseline geometry and interpolated with Fritsch–Carlson monotone cubic splines to prevent artificial curve overshoots between observations.
                 </p>
               </div>
 
@@ -542,17 +457,17 @@
                 <ul class="sources-list">
                   <li>
                     <a href="https://www.avfallsverige.se/in-english/" target="_blank" rel="noopener noreferrer">
-                      Avfall Sverige — Swedish Waste Management (1975–2019)
+                      Avfall Sverige (1975–2019)
                     </a>
                   </li>
                   <li>
                     <a href="https://www.avfallsverige.se/media/ca2fijue/swedish-waste-management-2024.pdf" target="_blank" rel="noopener noreferrer">
-                      Swedish Waste Management 2024 Report (PDF, 2020–2023)
+                      Swedish Waste Management 2024 (PDF)
                     </a>
                   </li>
                   <li>
                     <a href="https://www.avfallsverige.se/media/bigjrvsu/avfallstrenden_a4_2024.pdf" target="_blank" rel="noopener noreferrer">
-                      Avfallstrenden 2024 (PDF, 2024–2025)
+                      Avfallstrenden 2024 (PDF)
                     </a>
                   </li>
                 </ul>
@@ -565,8 +480,7 @@
       <!-- ====================================================================
            TEMPLATE 4/6: PROPORTIONAL AREAS SEMICIRCLES (ozone.js)
            Required DOM IDs: #ozone-plot, #ozone-custom-years, #ozone-left-year,
-                             #ozone-right-year, #ozone-caption, #ozone-status,
-                             #ozone-table-body
+                             #ozone-right-year, #ozone-caption, #ozone-status
            ==================================================================== -->
       <section id="ozone" class="chart-section" aria-labelledby="ozone-title" tabindex="-1">
         <header class="section-header">
@@ -574,11 +488,12 @@
           <p class="section-question">
             How much has the Antarctic ozone hole shrunk since its historical peak?
           </p>
-          <div class="header-subbar">
-            <p class="page-subtitle">
-              Area-scaled comparison of <strong>Antarctic ozone hole extent (1979–2025)</strong> in <strong>million km²</strong> and minimum column ozone in <strong>Dobson Units (DU)</strong> (Source: <cite>NASA Ozone Watch</cite>).
-            </p>
-          </div>
+          <p class="page-subtitle">
+            Area-scaled comparison of <strong>Antarctic ozone hole extent (1979–2025)</strong> in <strong>million km²</strong> and minimum column ozone in <strong>Dobson Units (DU)</strong> (Source: <cite>NASA Ozone Watch</cite>).
+          </p>
+          <p class="dataset-takeaway">
+            <strong>What the data shows:</strong> Since peaking at 26.6 million km² in 2006, the Antarctic ozone hole has contracted by nearly 30% to 18.7 million km² in 2025, tracking gradual stratospheric recovery under the Montreal Protocol.
+          </p>
         </header>
 
         <div class="chart-controls">
@@ -631,51 +546,13 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">Accessible Data Table (46 Years, 1979–2025)</span>
+              <span class="section-heading">Methodology</span>
             </summary>
 
             <div class="notion-toggle-content">
-              <div class="table-scroll-container" role="region" aria-labelledby="ozone-table-caption" tabindex="0">
-                <table class="data-table">
-                  <caption id="ozone-table-caption">
-                    Antarctic ozone hole seasonal mean area (07 Sep–13 Oct, million km²) and minimum column ozone (21 Sep–16 Oct, Dobson Units) from 2025 down to 1979 (Source: NASA Ozone Watch).
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Year</th>
-                      <th scope="col">Ozone Hole Area (million km²)</th>
-                      <th scope="col">Minimum Ozone (DU)</th>
-                      <th scope="col">% of 2006 Peak</th>
-                    </tr>
-                  </thead>
-                  <tbody id="ozone-table-body"></tbody>
-                </table>
-              </div>
-            </div>
-          </details>
-
-          <details class="notion-toggle">
-            <summary class="notion-toggle-summary">
-              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              <span class="section-heading">About This Proportional Areas Chart &amp; Methodology</span>
-            </summary>
-
-            <div class="notion-toggle-content">
-              <p class="section-lead">
-                <strong>Why Proportional Areas?</strong> Because ozone hole extent is literally measured as a surface area in <strong>million km²</strong>, encoding area with area mirrors satellite views of the polar vortex while letting readers judge recovery at a single glance.
-              </p>
-
               <div class="editorial-notes">
                 <p>
-                  <strong>Scaled by Area, Never by Radius:</strong> Each semicircle radius is computed as <code>r = R<sub>max</sub> × √(A / A<sub>max</sub>)</code>. Dividing the radius directly would shrink the visual area by a factor of 4 and exaggerate changes; square-root scaling guarantees area truthfulness.
-                </p>
-                <p>
-                  <strong>Center-Aligned Step &amp; Geography Anchor:</strong> Adjoining both area halves along a shared vertical axis creates an instantaneous visual step. Concentric reference rings for <strong>Antarctica (14.2M km²)</strong> and the <strong>1979 pre-hole baseline (0.1M km²)</strong> ground abstract figures in real geography.
-                </p>
-                <p>
-                  <strong>NASA Seasonal Windows &amp; Decadal Trends:</strong> Antarctic winter stratospheric temperatures cause natural meteorological swings. Comparing key benchmarks (2006 peak vs. 2025 or 5-year means) isolates Montreal Protocol progress.
+                  Annual values derive from NASA Goddard Space Flight Center satellite total-column ozone observations (TOMS, OMI, and OMPS instruments, 1979–2025). Following NASA Ozone Watch standard seasonal windows, annual hole extent averages daily areas falling below <code>220 DU</code> between September 7 and October 13, while minimum column ozone averages daily lows from September 21 to October 16. Semicircle radii are computed as <code>r = R<sub>max</sub> × √(A / A<sub>max</sub>)</code> so rendered surface area scales linearly with square kilometers.
                 </p>
               </div>
 
@@ -684,7 +561,7 @@
                 <ul class="sources-list">
                   <li>
                     <a href="https://ozonewatch.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer">
-                      NASA Ozone Watch — Goddard Space Flight Center (GSFC), 1979–2025
+                      NASA Ozone Watch — Goddard Space Flight Center (1979–2025)
                     </a>
                   </li>
                 </ul>
@@ -698,7 +575,7 @@
            TEMPLATE 5/6: MULTI-SCENARIO 10x10 WAFFLE CHART (waffle.js)
            Required DOM IDs: #waffle-plot, #waffle-hazard-select,
                              #waffle-threshold-note, #waffle-caption,
-                             #waffle-status, #waffle-table-body
+                             #waffle-status
            ==================================================================== -->
       <section id="waffle" class="chart-section" aria-labelledby="waffle-title" tabindex="-1">
         <header class="section-header">
@@ -708,6 +585,9 @@
           </p>
           <p class="page-subtitle">
             Three 10 × 10 grids comparing <strong>+1.5°C, +2.0°C, and +3.0°C</strong> global warming across <strong>996 cities (&gt;500k residents, ~2.1B people)</strong>. Each square equals <strong>1% of major cities</strong> (Source: <cite>World Resources Institute, 2024</cite>).
+          </p>
+          <p class="dataset-takeaway">
+            <strong>What the data shows:</strong> Moving from +1.5°C to +3.0°C of global warming multiplies the share of major cities facing extreme heat more than sevenfold—jumping from 6.0% (60 cities) to 45.4% (452 cities).
           </p>
         </header>
 
@@ -736,62 +616,22 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">Accessible Data Table (12 City Climate Hazards, 996 Cities)</span>
+              <span class="section-heading">Methodology</span>
             </summary>
 
             <div class="notion-toggle-content">
-              <div class="table-scroll-container" role="region" aria-labelledby="waffle-table-caption" tabindex="0">
-                <table class="data-table">
-                  <caption id="waffle-table-caption">
-                    Percentage and count of the world’s 996 largest cities (&gt;500k inhabitants) whose expected annual hazard value exceeds WRI extreme thresholds under +1.5°C, +2.0°C, and +3.0°C global warming (Source: Wong &amp; Mackres, 2024, WRI).
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Climate Hazard</th>
-                      <th scope="col">Extreme Threshold</th>
-                      <th scope="col">+1.5°C</th>
-                      <th scope="col">+2.0°C</th>
-                      <th scope="col">+3.0°C</th>
-                      <th scope="col">+1.5°C → +3.0°C</th>
-                    </tr>
-                  </thead>
-                  <tbody id="waffle-table-body"></tbody>
-                </table>
-              </div>
-            </div>
-          </details>
-
-          <details class="notion-toggle">
-            <summary class="notion-toggle-summary">
-              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              <span class="section-heading">About This Waffle Chart &amp; Methodology</span>
-            </summary>
-
-            <div class="notion-toggle-content">
-              <p class="section-lead">
-                <strong>Why a 3-Panel 10 × 10 Waffle Chart?</strong> Turning percentages into discrete 1% units makes the jump from the +1.5°C Paris Agreement target to +2.0°C and +3.0°C tangible at a single glance—no axis estimation required.
-              </p>
-
               <div class="editorial-notes">
                 <p>
-                  <strong>996 Major Cities (~2.1 Billion Residents):</strong> Encompasses every urban center worldwide with over 500,000 inhabitants in the Global Human Settlement Layer (GHSL) Urban Centre Database, representing 56% of the global urban population tracked in GHSL.
-                </p>
-                <p>
-                  <strong>Best-Fit Downscaled Climate Models:</strong> Following WRI’s Technical Note methodology, values use each city’s top-ranked NEX-GDDP-CMIP6 model (<code>model_rank = 1</code>, calibrated against ERA5 reanalysis) across 10-year windows centered on +1.5°C, +2.0°C, and +3.0°C above preindustrial (1880–1900) temperatures.
-                </p>
-                <p>
-                  <strong>Colorblind-Safe Progression:</strong> Filled squares step through amber (<code>#E69F00</code>), vermillion (<code>#D55E00</code>), and deep crimson (<code>#9E2A2B</code>) with distinct luminance levels, ensuring clear visual separation for all color vision types.
+                  Covers all 996 urban centers exceeding 500,000 inhabitants in the Global Human Settlement Layer (GHSL) Urban Centre Database. Following WRI’s Technical Note methodology, indicator projections use each city’s top-ranked bias-adjusted NEX-GDDP-CMIP6 climate model (<code>model_rank = 1</code>, calibrated against ERA5 historical reanalysis) evaluated over 10-year windows centered on +1.5°C, +2.0°C, and +3.0°C above preindustrial (1880–1900) temperatures, counting the percentage of cities that cross indicator-specific extreme thresholds.
                 </p>
               </div>
 
               <footer class="sources-footer">
-                <strong>Data Source:</strong>
+                <strong>Data Sources:</strong>
                 <ul class="sources-list">
                   <li>
                     <a href="https://datasets.wri.org/dataset/city-scale-climate-hazard-indicators-warming-scenarios" target="_blank" rel="noopener noreferrer">
-                      World Resources Institute (WRI) — City-Scale Climate Hazard Indicators (Wong &amp; Mackres, 2024)
+                      World Resources Institute — City-Scale Climate Hazard Indicators (2024)
                     </a>
                   </li>
                   <li>
@@ -808,8 +648,7 @@
 
       <!-- ====================================================================
            TEMPLATE 6/6: 3-STAGE BARYCENTER SANKEY DIAGRAM (sankey.js)
-           Required DOM IDs: #sankey-plot, #sankey-status,
-                             #sankey-table-caption, #sankey-table-body
+           Required DOM IDs: #sankey-plot, #sankey-status
            ==================================================================== -->
       <section id="sankey" class="chart-section" aria-labelledby="sankey-title" tabindex="-1">
         <header class="section-header">
@@ -819,6 +658,9 @@
           </p>
           <p class="page-subtitle">
             3-stage flow of <strong>global internal displacements (flows, 2020–2025)</strong> from <strong>Primary Cause</strong> (Conflict vs. Disaster) through <strong>Hazard Type</strong> into <strong>7 World Regions</strong> (Source: <cite>IDMC Global Internal Displacement Database</cite>).
+          </p>
+          <p class="dataset-takeaway">
+            <strong>What the data shows:</strong> In 2025, armed conflict (32.4M) and weather-related disasters (29.9M)—led by storms and floods—drove 62.3 million internal displacements globally, concentrated in East Asia &amp; Pacific, Sub-Saharan Africa, and MENA.
           </p>
         </header>
 
@@ -866,52 +708,13 @@
               <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span class="section-heading">Accessible Data Table (Displacements by Cause &amp; Hazard Type)</span>
+              <span class="section-heading">Methodology</span>
             </summary>
 
             <div class="notion-toggle-content">
-              <div class="table-scroll-container" role="region" aria-labelledby="sankey-table-caption" tabindex="0">
-                <table class="data-table">
-                  <caption id="sankey-table-caption">
-                    Global internal displacements (flows) in 2025 by primary cause, hazard subcategory, and leading affected region (Source: IDMC GIDD).
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Primary Cause</th>
-                      <th scope="col">Hazard / Trigger</th>
-                      <th scope="col">Internal Displacements</th>
-                      <th scope="col">Share of Global Total</th>
-                      <th scope="col">Most Affected Region</th>
-                    </tr>
-                  </thead>
-                  <tbody id="sankey-table-body"></tbody>
-                </table>
-              </div>
-            </div>
-          </details>
-
-          <details class="notion-toggle">
-            <summary class="notion-toggle-summary">
-              <svg class="notion-toggle-triangle" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              <span class="section-heading">About This Sankey Plot &amp; Methodology</span>
-            </summary>
-
-            <div class="notion-toggle-content">
-              <p class="section-lead">
-                <strong>Internal Displacements (Flows) vs. IDPs (Stocks):</strong> Following IDMC methodology, this Sankey aggregates <strong>Internal Displacements</strong>—annual population displacement movements recorded between January 1 and December 31—rather than year-end IDP stocks, preserving event-level attribution to specific hazards and regions.
-              </p>
-
               <div class="editorial-notes">
                 <p>
-                  <strong>Continuous 3-Stage Flow (Conflict &amp; Violence):</strong> Because conflict records do not carry a natural hazard classification in GIDD, blank hazard cells for conflict rows are explicitly mapped to <strong>Conflict &amp; Violence</strong> in Stage 2 so the full 100% flow remains unbroken across all three stages.
-                </p>
-                <p>
-                  <strong>Long-Tail Grouping &amp; Crossing Minimization:</strong> The five largest disaster hazards (<strong>Storm, Flood, Earthquake, Wildfire, Drought</strong>) are shown individually while smaller hazards (mixed disasters, erosion, mass movement, volcanic activity, extreme temperature) roll into <strong>Other Disasters</strong>. Stage 3 regions are ordered by weighted source barycenter to minimize ribbon crossings.
-                </p>
-                <p>
-                  <strong>Colorblind-Safe Encoding:</strong> Ribbons inherit their Stage 2 trigger hue—muted terracotta (<code>#B84A39</code>) for conflict, steel blue (<code>#2A6F8E</code>) for storms, deep teal (<code>#2B8270</code>) for floods, plum-slate (<code>#7B6D8D</code>) for earthquakes, ochre-orange (<code>#D97724</code>) for wildfires, and amber (<code>#D49B2A</code>) for drought—while destination regions use neutral slate bars (<code>#334155</code>) so readers can trace each driver cleanly.
+                  Aggregates annual event-level <em>internal displacement flows</em> (movements recorded January 1 – December 31) from the IDMC Global Internal Displacement Database rather than year-end IDP stocks, preserving event attribution to specific triggers. Conflict records without a natural hazard code are mapped to an explicit Stage 2 <em>Conflict &amp; Violence</em> node to conserve 100% of volume across all three stages; minor natural triggers beyond the top five hazards are grouped into <em>Other Disasters</em>; and Stage 3 destination regions are ordered by weighted source barycenter to minimize ribbon crossings.
                 </p>
               </div>
 
@@ -920,7 +723,7 @@
                 <ul class="sources-list">
                   <li>
                     <a href="https://www.internal-displacement.org/database/displacement-data/" target="_blank" rel="noopener noreferrer">
-                      Internal Displacement Monitoring Centre (IDMC) — Global Internal Displacement Database (GIDD), Disaggregated Flows (2020–2025)
+                      IDMC — Global Internal Displacement Database (GIDD, 2020–2025)
                     </a>
                   </li>
                 </ul>

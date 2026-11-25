@@ -355,17 +355,19 @@
     const { records } = dataset;
     populateYearSelects(leftSelect, rightSelect, records);
 
-    renderTableRows(
-      tableBodyEl,
-      [...records]
-        .sort((a, b) => b.year - a.year)
-        .map((r) => [
-          r.year,
-          r.area.toFixed(1),
-          r.min_ozone.toFixed(1),
-          `${((r.area / CONFIG.scale.maxArea) * 100).toFixed(1)}%`,
-        ])
-    );
+    if (tableBodyEl) {
+      renderTableRows(
+        tableBodyEl,
+        [...records]
+          .sort((a, b) => b.year - a.year)
+          .map((r) => [
+            r.year,
+            r.area.toFixed(1),
+            r.min_ozone.toFixed(1),
+            `${((r.area / CONFIG.scale.maxArea) * 100).toFixed(1)}%`,
+          ])
+      );
+    }
 
     let currentMode = "peak-vs-2025";
 

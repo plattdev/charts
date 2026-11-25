@@ -223,18 +223,20 @@
     const allNames = countries.map((d) => d.country);
 
     populateYearSelect(yearSelectEl, years);
-    renderTableRows(
-      tableBodyEl,
-      countries.map((row) => [
-        row.country,
-        row.region,
-        row.total[0].toFixed(1),
-        row.total[lastIdx].toFixed(1),
-        `${row.total_pct > 0 ? "+" : ""}${row.total_pct.toFixed(1)}%`,
-        row.female[lastIdx].toFixed(1),
-        row.male[lastIdx].toFixed(1),
-      ])
-    );
+    if (tableBodyEl) {
+      renderTableRows(
+        tableBodyEl,
+        countries.map((row) => [
+          row.country,
+          row.region,
+          row.total[0].toFixed(1),
+          row.total[lastIdx].toFixed(1),
+          `${row.total_pct > 0 ? "+" : ""}${row.total_pct.toFixed(1)}%`,
+          row.female[lastIdx].toFixed(1),
+          row.male[lastIdx].toFixed(1),
+        ])
+      );
+    }
     updateMultiAutocomplete(datalistEl, allNames, "");
 
     const state = {

@@ -154,13 +154,15 @@
     const maxYear = records[records.length - 1].year;
     const maxTotal = Math.max(...records.map((r) => r.total || 0));
 
-    renderTableRows(
-      tbodyEl,
-      [...records].reverse().map((r) => [
-        r.year,
-        ...CONFIG.tableColumns.map((col) => ((r[col] || 0) > 0 ? formatExact(r[col]) : "—")),
-      ])
-    );
+    if (tbodyEl) {
+      renderTableRows(
+        tbodyEl,
+        [...records].reverse().map((r) => [
+          r.year,
+          ...CONFIG.tableColumns.map((col) => ((r[col] || 0) > 0 ? formatExact(r[col]) : "—")),
+        ])
+      );
+    }
 
     const state = { mode: "stream" };
 
