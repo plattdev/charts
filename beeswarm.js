@@ -272,9 +272,15 @@
       const isCompact = plotEl.clientWidth < 680;
       const marginLeft = isCompact ? 145 : 195;
       const marginRight = isCompact ? 20 : 36;
-      const marginTop = 36;
-      const marginBottom = 64;
-      const totalHeight = isCompact ? 590 : 630;
+      const marginTop = 24;
+      const marginBottom = 56;
+      const measuredHeight = Math.round(plotEl.clientHeight);
+      const totalHeight =
+        measuredHeight >= 360
+          ? Math.min(measuredHeight, 600)
+          : isCompact
+            ? 520
+            : 560;
       const innerWidth = Math.max(plotEl.clientWidth - marginLeft - marginRight, 260);
       const innerHeight = totalHeight - marginTop - marginBottom;
       const laneCount = regionsOrder.length;

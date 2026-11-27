@@ -157,7 +157,7 @@
       template: "plotly_white",
       paper_bgcolor: "rgba(0,0,0,0)",
       plot_bgcolor: "rgba(0,0,0,0)",
-      margin: { l: 80, r: 40, t: 30, b: 80 },
+      margin: { l: 76, r: 36, t: 16, b: 64 },
     };
 
     await Plotly.newPlot(plotEl, [trace], layout, {

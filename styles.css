@@ -57,11 +57,9 @@
 @layer layout {
   .page-shell {
     display: grid;
-    grid-template-columns: minmax(275px, 335px) minmax(0, 1fr);
+    grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
     align-items: start;
     width: 100%;
-    max-width: 1780px;
-    margin-inline: auto;
     background-color: var(--bg-page);
   }
 
@@ -71,13 +69,15 @@
     min-block-size: 100dvh;
     max-block-size: 100dvh;
     overflow-y: auto;
+    scrollbar-gutter: stable;
     overscroll-behavior: contain;
     background-color: var(--bg-page);
-    padding-block: 2.25rem 2rem;
-    padding-inline: 2.25rem;
+    padding-block: 2rem;
+    padding-inline: clamp(2.5rem, 4vw, 3.75rem) 2.25rem;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
+    justify-content: safe center;
     align-items: stretch;
     gap: 1.5rem;
   }
@@ -120,6 +120,12 @@
     background-repeat: repeat-y, repeat-y, no-repeat;
     background-position: left top, right top, center top;
     background-size: 50px 720px, 50px 720px, calc(100% - 98px) 100%;
+  }
+
+  .container > main,
+  .container > .site-footer {
+    max-inline-size: 1380px;
+    margin-inline: auto;
   }
 
   /* Vertical Chart Index in White Left Rail with CSS Scrollspy */
@@ -284,11 +290,13 @@
  * -------------------------------------------------------------------------- */
 @layer components {
   .chart-section {
-    scroll-margin-top: 1.75rem;
+    scroll-margin-top: 1rem;
   }
 
   .chart-section + .chart-section {
     margin-block-start: 5.5rem;
+    padding-block-start: 4.5rem;
+    border-block-start: 1px solid var(--border-subtle);
   }
 
   .chart-section:focus {
@@ -296,30 +304,29 @@
   }
 
   .section-header {
-    margin-block-end: 1.5rem;
-    padding-block-end: 1.35rem;
-    border-bottom: 1px solid var(--border-subtle);
+    margin-block-end: 1rem;
+    padding-block-end: 0.9rem;
   }
 
   .page-title {
     font-family: var(--font-sans);
-    font-size: clamp(1.65rem, 1.25rem + 1.35vw, 2.35rem);
+    font-size: clamp(1.55rem, 1.2rem + 1.2vw, 2.2rem);
     font-weight: 800;
     letter-spacing: -0.03em;
     line-height: 1.15;
-    margin-block: 0 0.75rem;
+    margin-block: 0 0.45rem;
     max-width: 1300px;
     text-wrap: balance;
     color: var(--text);
   }
 
   .section-question {
-    font-size: clamp(1.18rem, 1.05rem + 0.45vw, 1.4rem);
+    font-size: clamp(1.12rem, 1rem + 0.4vw, 1.32rem);
     font-weight: 700;
-    line-height: 1.32;
+    line-height: 1.3;
     letter-spacing: -0.015em;
     color: var(--text);
-    margin-block: 0 0.65rem;
+    margin-block: 0 0.45rem;
     max-width: 68ch;
     text-wrap: balance;
   }
@@ -327,8 +334,8 @@
   .page-subtitle {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 0.96rem;
+    line-height: 1.55;
     max-width: 75ch;
     text-wrap: pretty;
   }
@@ -339,14 +346,14 @@
   }
 
   .dataset-takeaway {
-    margin-block: 1rem 0;
-    padding-block: 0.65rem;
-    padding-inline: 0.95rem;
+    margin-block: 0.65rem 0;
+    padding-block: 0.5rem;
+    padding-inline: 0.9rem;
     background: transparent;
     border: 1px dotted var(--border-dotted);
     color: var(--text-secondary);
-    font-size: 0.94rem;
-    line-height: 1.6;
+    font-size: 0.92rem;
+    line-height: 1.52;
     max-width: 76ch;
     text-wrap: pretty;
   }
@@ -361,8 +368,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
-    gap: 1rem 1.75rem;
-    margin-block-end: 1.5rem;
+    gap: 0.85rem 1.5rem;
+    margin-block-end: 1rem;
   }
 
   .control-group {
@@ -541,16 +548,16 @@
 
   /* Figure, Canvas, Tooltip & Error Banner */
   .viz-figure {
-    margin: 0 0 2rem;
+    margin: 0 0 1.5rem;
   }
 
   .chart-canvas {
     width: 100%;
-    min-height: 680px;
+    height: clamp(380px, calc(100dvh - 340px), 620px);
   }
 
   .chart-canvas--beeswarm {
-    min-height: 620px;
+    height: clamp(390px, calc(100dvh - 365px), 580px);
   }
 
   .viz-caption {
@@ -586,7 +593,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
-    border-top: 1px solid var(--border-subtle);
     padding-block-start: 1.15rem;
   }
 
@@ -776,7 +782,9 @@
   .streamgraph-svg {
     display: block;
     width: 100%;
+    max-inline-size: min(100%, calc(clamp(300px, calc(100dvh - 390px), 430px) * 1120 / 430));
     height: auto;
+    margin-inline: auto;
     overflow: visible;
   }
 
@@ -928,7 +936,7 @@
   .ozone-svg {
     display: block;
     width: 100%;
-    max-width: 920px;
+    max-inline-size: min(920px, 100%, calc(clamp(320px, calc(100dvh - 375px), 470px) * 920 / 492));
     height: auto;
     margin-inline: auto;
     overflow: visible;
@@ -1104,6 +1112,7 @@
   .sankey-svg {
     display: block;
     width: 100%;
+    max-inline-size: min(100%, calc(clamp(380px, calc(100dvh - 340px), 640px) * 1280 / 760));
     height: auto;
     margin-inline: auto;
     overflow: visible;
