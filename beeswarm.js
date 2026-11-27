@@ -272,7 +272,7 @@
       const isCompact = plotEl.clientWidth < 680;
       const marginLeft = isCompact ? 145 : 195;
       const marginRight = isCompact ? 20 : 36;
-      const marginTop = 24;
+      const marginTop = 38;
       const marginBottom = 56;
       const measuredHeight = Math.round(plotEl.clientHeight);
       const totalHeight =
@@ -366,7 +366,7 @@
                 bordercolor: "#334155",
                 borderwidth: 1,
                 borderpad: 3,
-                font: { family: FONT_STACK, size: 13, color: "#0f172a" },
+                font: { family: FONT_STACK, size: 14.3, color: "#0f172a" },
               });
             }
           } else {
@@ -447,14 +447,14 @@
 
         annotations.push({
           x: globalVal,
-          y: 1.035,
+          y: 1.01,
           xref: "x",
           yref: "paper",
           text: `Global Avg: <b>${formatMetricValue(globalVal, mode)}</b>`,
           showarrow: false,
           xanchor: "center",
           yanchor: "bottom",
-          font: { family: FONT_STACK, size: 13, color: "#64748b" },
+          font: { family: FONT_STACK, size: 14.3, color: "#64748b" },
         });
       }
 
@@ -475,8 +475,8 @@
       const layout = {
         height: totalHeight,
         xaxis: {
-          title: { text: `${axisTitle} — ${sexLabel}`, standoff: 16, font: { size: 14 } },
-          tickfont: { size: 13 },
+          title: { text: `${axisTitle} — ${sexLabel}`, standoff: 16, font: { size: 15.3 } },
+          tickfont: { size: 14.3 },
           range: [xMin, xMax],
           ticksuffix: isPercent ? "%" : "",
           zeroline: false,
@@ -486,7 +486,7 @@
           tickmode: "array",
           tickvals: yTickVals,
           ticktext: yTickText,
-          tickfont: { size: 13 },
+          tickfont: { size: 14.3 },
           range: [-0.62, laneCount - 0.38],
           showgrid: false,
           zeroline: false,
@@ -494,11 +494,11 @@
         },
         shapes: laneShapes,
         annotations,
-        font: { family: FONT_STACK, size: 14, color: "#0f172a" },
+        font: { family: FONT_STACK, size: 15.3, color: "#0f172a" },
         hoverlabel: {
           bgcolor: "#ffffff",
           bordercolor: "#cbd5e1",
-          font: { family: FONT_STACK, size: 13.5, color: "#0f172a" },
+          font: { family: FONT_STACK, size: 14.8, color: "#0f172a" },
         },
         hovermode: "closest",
         template: "plotly_white",

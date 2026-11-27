@@ -128,9 +128,9 @@
         colorscale: style.colorscale,
         showscale: true,
         colorbar: {
-          title: { text: axes.colorbarTitle, font: { size: 18 } },
+          title: { text: axes.colorbarTitle, font: { size: 19.3 } },
           tickprefix: axes.colorbarPrefix,
-          tickfont: { size: 15 },
+          tickfont: { size: 16.3 },
         },
         opacity: sorted.map(() => style.defaultOpacity),
         line: {
@@ -142,17 +142,17 @@
 
     const layout = {
       xaxis: {
-        title: { text: axes.xTitle, font: { size: 20 }, standoff: 18 },
-        tickfont: { size: 16 },
+        title: { text: axes.xTitle, font: { size: 21.3 }, standoff: 18 },
+        tickfont: { size: 17.3 },
         zeroline: false,
       },
       yaxis: {
-        title: { text: axes.yTitle, font: { size: 20 }, standoff: 18 },
-        tickfont: { size: 16 },
+        title: { text: axes.yTitle, font: { size: 21.3 }, standoff: 18 },
+        tickfont: { size: 17.3 },
         zeroline: false,
       },
-      font: { family: FONT_STACK, size: 17, color: "#0f172a" },
-      hoverlabel: { font: { family: FONT_STACK, size: 15 } },
+      font: { family: FONT_STACK, size: 18.3, color: "#0f172a" },
+      hoverlabel: { font: { family: FONT_STACK, size: 16.3 } },
       hovermode: "closest",
       template: "plotly_white",
       paper_bgcolor: "rgba(0,0,0,0)",
@@ -215,7 +215,7 @@
               bordercolor: "#0f172a",
               borderwidth: 1.2,
               borderpad: 4,
-              font: { family: FONT_STACK, size: 15, color: "#0f172a" },
+              font: { family: FONT_STACK, size: 16.3, color: "#0f172a" },
             });
           }
         } else {

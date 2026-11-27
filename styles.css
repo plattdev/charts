@@ -34,6 +34,10 @@
     box-sizing: border-box;
   }
 
+  html {
+    font-size: 17.33px; /* 1pt (~1.33px) increase on standard 16px (12pt -> 13pt) base */
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
@@ -111,8 +115,8 @@
     min-inline-size: 0;
     width: 100%;
     min-height: 100vh;
-    padding-block: 2rem 4rem;
-    padding-inline: 4.25rem;
+    padding-block: 2.25rem 4rem;
+    padding-inline: clamp(2.5rem, 3.8vw, 4.5rem);
     background-image:
       url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2050%20720%22%20width%3D%2250%22%20height%3D%22720%22%3E%3Cpath%20d%3D%22M%2025%2C0%20C%2045%2C108%2045%2C252%2025%2C360%20C%205%2C468%205%2C612%2025%2C720%20L%2050%2C720%20L%2050%2C0%20Z%22%20fill%3D%22%23f4f6f8%22/%3E%3C/svg%3E"),
       url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2050%20720%22%20width%3D%2250%22%20height%3D%22720%22%3E%3Cpath%20d%3D%22M%2025%2C0%20C%2045%2C108%2045%2C252%2025%2C360%20C%205%2C468%205%2C612%2025%2C720%20L%200%2C720%20L%200%2C0%20Z%22%20fill%3D%22%23f4f6f8%22/%3E%3C/svg%3E"),
@@ -124,7 +128,7 @@
 
   .container > main,
   .container > .site-footer {
-    max-inline-size: 1380px;
+    max-inline-size: 1300px;
     margin-inline: auto;
   }
 
@@ -789,7 +793,7 @@
   }
 
   .stream-axis-label {
-    font-size: 12px;
+    font-size: 13.3px;
     font-weight: 500;
     fill: #64748b;
   }
@@ -799,7 +803,7 @@
   }
 
   .stream-band-label {
-    font-size: 13px;
+    font-size: 14.3px;
     font-weight: 700;
     letter-spacing: -0.01em;
     text-shadow: 0 1px 2px rgba(15, 23, 42, 0.28);
@@ -815,7 +819,7 @@
   }
 
   .stream-callout-label {
-    font-size: 12px;
+    font-size: 13.3px;
     font-weight: 600;
     letter-spacing: -0.01em;
     fill: var(--text-secondary);
@@ -957,14 +961,14 @@
   }
 
   .ozone-svg-period {
-    font-size: 32px;
+    font-size: 33.3px;
     font-weight: 800;
     letter-spacing: -0.03em;
     fill: #0f172a;
   }
 
   .ozone-svg-area {
-    font-size: 22px;
+    font-size: 23.3px;
     font-weight: 700;
     letter-spacing: -0.02em;
   }
@@ -978,19 +982,19 @@
   }
 
   .ozone-svg-du {
-    font-size: 13.5px;
+    font-size: 14.8px;
     font-weight: 500;
     fill: #64748b;
   }
 
   .ozone-svg-step-label {
-    font-size: 14px;
+    font-size: 15.3px;
     font-weight: 700;
     fill: #0f172a;
   }
 
   .ozone-svg-legend-text {
-    font-size: 13px;
+    font-size: 14.3px;
     font-weight: 500;
     fill: #475569;
   }
@@ -1119,7 +1123,7 @@
   }
 
   .sankey-col-kicker {
-    font-size: 13px;
+    font-size: 14.3px;
     font-weight: 800;
     letter-spacing: 0.08em;
     fill: #475569;
@@ -1168,13 +1172,13 @@
   }
 
   .sankey-idmc-title {
-    font-size: 15.5px;
+    font-size: 16.8px;
     font-weight: 700;
     fill: #0f172a;
   }
 
   .sankey-idmc-meta {
-    font-size: 13.5px;
+    font-size: 14.8px;
     font-weight: 500;
     fill: #475569;
   }

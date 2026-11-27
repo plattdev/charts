@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1795780172">
+  <link rel="stylesheet" href="styles.css?v=1795791073">
 
   <!-- Vendor (required only for Scatter & Beeswarm templates) -->
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
@@ -16,8 +16,8 @@
   <script src="chart-core.js?v=2026" defer></script>
 
   <!-- Standalone reusable chart templates (keep only the scripts you use) -->
-  <script src="scatter.js?v=2026" defer></script>
-  <script src="beeswarm.js?v=2026" defer></script>
+  <script src="scatter.js?v=1795791073" defer></script>
+  <script src="beeswarm.js?v=1795792241" defer></script>
   <script src="streamgraph.js?v=2026" defer></script>
   <script src="waffle.js?v=2026" defer></script>
   <script src="sankey.js?v=2026" defer></script>
@@ -30,7 +30,7 @@
       <header class="portfolio-header">
         <h1 class="portfolio-title">Matching Chart Geometry to What the Data Says</h1>
         <p class="portfolio-lead">
-          Each public dataset has its own shape—multivariate trade-offs, regional distributions, 50-year transitions, threshold shares, multi-stage flows, or physical areas. Rather than forcing a single standard template, I experimented with selecting a different chart type for each dataset depending on the structure of its numbers and the question it answers.
+        I experimented with selecting a different chart type for each dataset depending on the structure of its numbers and the question it answers.
         </p>
       </header>
 
@@ -240,7 +240,7 @@
             <div class="notion-toggle-content">
               <div class="editorial-notes">
                 <p>
-                  Records are harmonized across 140 countries with complete coverage in all three international datasets. Subjective well-being uses the <em>World Happiness Report</em> Cantril ladder 3-year rolling average (2022–2024) to reduce annual survey sampling noise; sustainability uses the normalized <em>Sustainable Development Report</em> index across all 17 United Nations Sustainable Development Goals (UN SDGs); and economic output uses the latest available World Bank GDP per capita adjusted for PPP in constant 2021 international dollars, with marker radii scaled by square root (<code>r ∝ √GDP</code>) so circle area remains proportional to wealth.
+                  Subjective well-being uses the <em>World Happiness Report</em> Cantril ladder 3-year rolling average (2022–2024) to reduce annual survey sampling noise; sustainability uses the normalized <em>Sustainable Development Report</em> index across all 17 United Nations Sustainable Development Goals (UN SDGs); and economic output uses the latest available World Bank GDP per capita adjusted for PPP in constant 2021 international dollars, with marker radii scaled by square root (<code>r ∝ √GDP</code>) so circle area remains proportional to wealth.
                 </p>
               </div>
             </div>
@@ -345,9 +345,6 @@
             aria-label="Beeswarm plot of Healthy Life Expectancy at birth grouped across 6 World Health Organization regions"
             aria-describedby="beeswarm-caption"
           ></div>
-          <figcaption id="beeswarm-caption" class="viz-caption">
-            Showing both sexes healthy life expectancy (2023) across 185 countries and territories grouped by official WHO region. Diamonds mark regional averages; the dotted line marks the WHO Global average.
-          </figcaption>
         </figure>
 
         <p id="beeswarm-status" class="visually-hidden" aria-live="polite"></p>
@@ -380,7 +377,7 @@
             <div class="notion-toggle-content">
               <div class="editorial-notes">
                 <p>
-                  HALE at birth is estimated via the WHO Global Health Estimates Sullivan method, combining standard abridged life tables with age- and sex-specific disability prevalence weights from the Global Burden of Disease study across 185 member states (2000–2023). Regional diamonds reflect official WHO population-weighted aggregates, while country dots retain exact values and resolve density collisions via deterministic circle-tangent packing.
+                  Showing both sexes healthy life expectancy (2023) across 185 countries and territories grouped by official WHO region. Diamonds mark regional averages; the dotted line marks the WHO Global average. HALE at birth is estimated via the WHO Global Health Estimates Sullivan method, combining standard abridged life tables with age- and sex-specific disability prevalence weights from the Global Burden of Disease study across 185 member states (2000–2023). Regional diamonds reflect official WHO population-weighted aggregates, while country dots retain exact values and resolve density collisions via deterministic circle-tangent packing.
                 </p>
               </div>
             </div>
